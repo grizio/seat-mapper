@@ -9,7 +9,8 @@ export function Styles() {
         flexDirection: "column",
         alignItems: "stretch",
         width: "100%",
-        height: "100%"
+        height: "100%",
+        outline: "none"
       },
 
       ".toolbar": {

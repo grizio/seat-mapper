@@ -1,4 +1,4 @@
-import {addingSeats, movingSeat, State, zoneOfAddingSeats} from "./State"
+import {addingSeats, isMovingSeat, movingSeat, State, zoneOfAddingSeats} from "./State"
 import {arrayFill, promptEnum, promptInteger} from "./utils"
 import {Pos, defaultPosition} from "./models/geometry"
 import {seatHeight, seatWidth} from "./models/Seat"
@@ -99,6 +99,16 @@ export class Store {
     this.update({
       action: addingSeats(grid)
     })
+  }
+
+  public removeSeat = () => {
+    const action = this.state.action
+    if (action && isMovingSeat(action)) {
+      this.update({
+        seats: this.state.seats.filter(_ => _.id !== action.seat.id),
+        action: undefined
+      })
+    }
   }
 
   public confirmAction = () => {
