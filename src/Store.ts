@@ -138,6 +138,12 @@ export class Store {
     }
   }
 
+  public cancelAction = () => {
+    this.update({
+      action: undefined
+    })
+  }
+
   public updateMousePosition = (position: Pos) => {
     const action = this.state.action
     if (action) {

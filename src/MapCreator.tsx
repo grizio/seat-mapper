@@ -21,12 +21,13 @@ export default class MapCreator extends Component<Props, State> {
   }
 
   render({}: Props, state: State): preact.ComponentChild {
-    return <div class="host">
+    return <div class="host" onKeyPress={this.onKeyPress}>
       <Styles/>
       <Toolbar
         add={this.startAddSeat}
         startAddLine={this.startAddLine}
         startAddGrid={this.startAddGrid}
+        cancelAction={this.cancelAction}
       />
       <div class="map-container" onMouseMove={this.mousemove}>
         <Map
@@ -43,8 +44,14 @@ export default class MapCreator extends Component<Props, State> {
   startAddLine = () => this.store.startAddLine()
   startAddGrid = () => this.store.startAddGrid()
   confirmAction = () => this.store.confirmAction()
+  cancelAction = () => this.store.cancelAction()
   mousemove = (event: MouseEvent) => this.store.updateMousePosition({
     x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,
     y: event.clientY - (event.currentTarget as HTMLElement).offsetTop
   })
+  onKeyPress = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      this.store.cancelAction()
+    }
+  }
 }
