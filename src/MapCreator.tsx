@@ -1,10 +1,9 @@
 import {Component, h} from "preact"
-import {Styles} from "./Styles";
-import {Toolbar} from "./Toolbar";
-import {Map} from "./Map";
-import {Shadow} from "./Shadow";
-import {Store} from "./Store";
-import {State as StoreState} from "./State";
+import {Styles} from "./Styles"
+import {Toolbar} from "./Toolbar"
+import {Map} from "./Map"
+import {Store} from "./Store"
+import {State as StoreState} from "./State"
 
 interface Props {
 }
@@ -21,18 +20,14 @@ export default class MapCreator extends Component<Props, State> {
     this.store = new Store({seats: []}, state => this.setState({state}))
   }
 
-  render({}: Props, {state: {seats, action}}: State): preact.ComponentChild {
+  render({}: Props, state: State): preact.ComponentChild {
     return <div class="host">
       <Styles/>
       <Toolbar add={this.startAddSeat}/>
       <div class="map-container" onMouseMove={this.mousemove}>
         <Map
-          seats={seats}
+          state={state.state}
           startMoveSeat={this.startMoveSeat}
-        />
-
-        <Shadow
-          action={action}
           confirmAction={this.confirmAction}
         />
       </div>

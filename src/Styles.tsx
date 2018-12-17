@@ -27,23 +27,6 @@ export function Styles() {
 
       ".map": {
         flexGrow: 1
-      },
-
-      ".shadow": {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 10,
-        overflow: "hidden"
-      },
-
-      ".shadow-seat": {
-        position: "absolute",
-        width: "50px",
-        height: "50px",
-        border: "1px dotted #555"
       }
     })
   }</style>

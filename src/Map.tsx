@@ -1,17 +1,21 @@
 import {h} from "preact"
 import {Seat} from "./models"
+import {Shadow} from "./Shadow";
+import {State} from "./State";
 
 interface Props {
-  seats: Array<Seat>
+  state: State
   startMoveSeat: (id: number) => void
+  confirmAction: () => void
 }
 
-export function Map({seats, startMoveSeat}: Props) {
+export function Map({state, startMoveSeat, confirmAction}: Props) {
   return (
     <svg class="map">
       {
-        seats.map(seat => Seat(seat, startMoveSeat))
+        state.seats.map(seat => Seat(seat, startMoveSeat))
       }
+      <Shadow state={state} confirmAction={confirmAction}/>
     </svg>
   )
 }
