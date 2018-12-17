@@ -39,7 +39,7 @@ export function Styles() {
         overflow: "hidden"
       },
 
-      ".adding-seat": {
+      ".shadow-seat": {
         position: "absolute",
         width: "50px",
         height: "50px",

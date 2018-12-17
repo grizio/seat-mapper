@@ -24,9 +24,13 @@ export default class MapCreator extends Component<Props, State> {
   render({}: Props, {state: {seats, action}}: State): preact.ComponentChild {
     return <div class="host">
       <Styles/>
-      <Toolbar add={this.addSeat}/>
+      <Toolbar add={this.startAddSeat}/>
       <div class="map-container" onMouseMove={this.mousemove}>
-        <Map seats={seats}/>
+        <Map
+          seats={seats}
+          startMoveSeat={this.startMoveSeat}
+        />
+
         <Shadow
           action={action}
           confirmAction={this.confirmAction}
@@ -35,7 +39,8 @@ export default class MapCreator extends Component<Props, State> {
     </div>
   }
 
-  addSeat = () => this.store.startAddSeat()
+  startAddSeat = () => this.store.startAddSeat()
+  startMoveSeat = (id: number) => this.store.startMoveSeat(id)
   confirmAction = () => this.store.confirmAction()
   mousemove = (event: MouseEvent) => this.store.updateMousePosition({
     x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,

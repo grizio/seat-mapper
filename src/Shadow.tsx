@@ -7,10 +7,10 @@ interface Props {
 }
 
 export function Shadow({action, confirmAction}: Props) {
-  if (action) {
+  if (action !== undefined) {
     return (
       <div class="shadow">
-        <div class="adding-seat" style={{top: action.seat.y, left: action.seat.x}} onClick={confirmAction}/>
+        <div class="shadow-seat" style={{top: action.seat.y, left: action.seat.x}} onClick={confirmAction}/>
       </div>
     )
   } else {
