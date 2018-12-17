@@ -71,6 +71,36 @@ export class Store {
     }
   }
 
+  public startAddGrid = () => {
+    // Use a real modal dialog in the future
+    const numberOfRows = promptInteger("Number of rows")
+    if (numberOfRows === undefined) return
+
+    const numberOfColumns = promptInteger("Number of seats per row")
+    if (numberOfColumns === undefined) return
+
+    const columnSpacing = promptInteger("Spacing between two rows (size of a seat: 50)")
+    if (columnSpacing === undefined) return
+
+    const rowSpacing = promptInteger("Spacing between two seats on the same row (size of a seat: 50)")
+    if (rowSpacing === undefined) return
+
+    const shift = promptInteger("Shift between two rows (size of a seat: 50)")
+    if (shift === undefined) return
+
+    const grid = arrayFill(numberOfRows, (rowIndex) => {
+      return arrayFill(numberOfColumns, (columnIndex) => {
+        return {
+          x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
+          y: (seatHeight + columnSpacing) * rowIndex
+        }
+      })
+    }).flat()
+    this.update({
+      action: addingSeats(grid)
+    })
+  }
+
   public confirmAction = () => {
     const state = this.state;
     const action = state.action

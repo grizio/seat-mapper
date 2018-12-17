@@ -26,6 +26,7 @@ export default class MapCreator extends Component<Props, State> {
       <Toolbar
         add={this.startAddSeat}
         startAddLine={this.startAddLine}
+        startAddGrid={this.startAddGrid}
       />
       <div class="map-container" onMouseMove={this.mousemove}>
         <Map
@@ -40,6 +41,7 @@ export default class MapCreator extends Component<Props, State> {
   startAddSeat = () => this.store.startAddSeat()
   startMoveSeat = (id: number) => this.store.startMoveSeat(id)
   startAddLine = () => this.store.startAddLine()
+  startAddGrid = () => this.store.startAddGrid()
   confirmAction = () => this.store.confirmAction()
   mousemove = (event: MouseEvent) => this.store.updateMousePosition({
     x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,
