@@ -1,3 +1,5 @@
+import {Zone} from "./models/geometry"
+
 export function promptInteger(message: string): number | undefined {
   let value: string | null = null
   do {
@@ -46,4 +48,19 @@ export function max(values: Array<number>, fallback: number): number {
 
 export function visuallyEqual(first: number, second: number) {
   return Math.round(first) === Math.round(second)
+}
+
+export function containingZone(zones: Array<Zone>): Zone {
+  if (zones.length === 0) {
+    return { x1: 0, y1: 0, x2: 0, y2: 0 }
+  } else {
+    const head = zones[0]
+    const tail = zones.slice(1)
+    return tail.reduce((acc, zone) => ({
+      x1: Math.min(acc.x1, zone.x1),
+      y1: Math.min(acc.y1, zone.y1),
+      x2: Math.max(acc.x2, zone.x2),
+      y2: Math.max(acc.y2, zone.y2)
+    }), head)
+  }
 }

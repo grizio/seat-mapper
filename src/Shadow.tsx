@@ -1,7 +1,9 @@
 import {h} from "preact"
-import {AddingLine, isAddingLine, isAddingSeat, isMovingSeat, State, zoneOfAddingLine} from "./State"
-import {Line, Seat, seatHeight, seatToZone, seatWidth, Zone, zoneToRect} from "./models"
-import {arrayFill, visuallyEqual} from "./utils"
+import {AddingSeats, isAddingSeats, isMovingSeat, State, zoneOfAddingSeats} from "./State"
+import {visuallyEqual} from "./utils"
+import {seatToZone, zoneToRect} from "./models/adapters"
+import {seatHeight, seatWidth} from "./models/Seat"
+import {Line, Pos, translateZone, Zone} from "./models/geometry"
 
 interface Props {
   state: State
@@ -11,39 +13,46 @@ interface Props {
 export function Shadow({state, confirmAction}: Props) {
   const action = state.action
   if (action !== undefined) {
-    return (
-      <g id="shadow">
-        {
-          isAddingSeat(action) || isMovingSeat(action)
-            ? renderShadowSeat(action.seat, confirmAction)
-            : undefined
-        }
-
-        {
-          isAddingSeat(action) || isMovingSeat(action)
-            ? renderAlignmentLines(seatToZone(action.seat), state.seats)
-            : undefined
-        }
-
-        {
-          isAddingLine(action)
-            ? renderAlignmentLines(zoneOfAddingLine(action), state.seats)
-            : undefined
-        }
-
-        {
-          isAddingLine(action)
-            ? renderShadowLine(action, confirmAction)
-            : undefined
-        }
-      </g>
-    )
+    if (isAddingSeats(action)) {
+      return (
+        <g id="shadow">
+          {renderShadowSeats(action, confirmAction)}
+          {renderAlignmentLines(translateZone(zoneOfAddingSeats(action), action.position), state.seats)}
+        </g>
+      )
+    } else if (isMovingSeat(action)) {
+      return (
+        <g id="shadow">
+          {renderShadowSeat(action.seat, confirmAction)}
+          {renderAlignmentLines(seatToZone(action.seat), state.seats)}
+        </g>
+      )
+    } else {
+      return <g id="shadow"/>
+    }
   } else {
     return <g id="shadow"/>
   }
 }
 
-function renderShadowSeat(seat: Seat, confirmAction?: () => void) {
+function renderShadowSeats(action: AddingSeats, confirmAction: () => void) {
+  const container = zoneToRect(zoneOfAddingSeats(action))
+  return (
+    <g onClick={confirmAction}>
+      <rect x={container.x + action.position.x} y={container.y + action.position.y}
+            width={container.width} height={container.height}
+            fill="transparent" stroke="transparent"
+      />
+      {
+        action.seats
+          .map(seat => ({x: seat.x + action.position.x, y: seat.y + action.position.y}))
+          .map(_ => renderShadowSeat(_))
+      }
+    </g>
+  )
+}
+
+function renderShadowSeat(seat: Pos, confirmAction?: () => void) {
   return (
     <rect x={seat.x}
           y={seat.y}
@@ -60,35 +69,7 @@ function renderShadowSeat(seat: Seat, confirmAction?: () => void) {
   )
 }
 
-function renderShadowLine(action: AddingLine, confirmAction: () => void) {
-  const shadowSeats = shadowSeatOfLine(action)
-  const rect = zoneToRect(zoneOfAddingLine(action))
-  // The first rect exists to capture all click on the group when having even seats.
-  return (
-    <g onClick={confirmAction}>
-      <rect x={rect.x} y={rect.y} width={rect.width} height={rect.height} fill="transparent" stroke="transparent"/>
-      {shadowSeats.map(_ => renderShadowSeat(_))}
-    </g>
-  )
-}
-
-function shadowSeatOfLine(action: AddingLine): Array<Seat> {
-  if (action.direction === "horizontal") {
-    return arrayFill(action.numberOfSeats, index => ({
-      id: -1,
-      x: action.x + (seatWidth + action.spacing) * index,
-      y: action.y
-    }))
-  } else {
-    return arrayFill(action.numberOfSeats, index => ({
-      id: -1,
-      x: action.x,
-      y: action.y + (seatHeight + action.spacing) * index
-    }))
-  }
-}
-
-function renderAlignmentLines(zone: Zone, seats: Array<Seat>) {
+function renderAlignmentLines(zone: Zone, seats: Array<Pos>) {
   const lines = seats.flatMap(seat => {
     const acc: Array<Line> = []
     // We voluntarily go out of bounds so the trace is more visible

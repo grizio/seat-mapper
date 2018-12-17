@@ -1,6 +1,8 @@
-import {addingLine, addingSeat, Direction, movingSeat, State} from "./State"
+import {addingSeats, movingSeat, State, zoneOfAddingSeats} from "./State"
 import {arrayFill, promptEnum, promptInteger} from "./utils"
-import {seatHeight, seatWidth} from "./models"
+import {Pos, defaultPosition} from "./models/geometry"
+import {seatHeight, seatWidth} from "./models/Seat"
+import {zoneToRect} from "./models/adapters"
 
 export class Store {
   private state: State
@@ -19,7 +21,7 @@ export class Store {
 
   public startAddSeat = () => {
     this.update({
-      action: addingSeat({id: this.nextSeatId(), x: 0, y: 0})
+      action: addingSeats([defaultPosition])
     })
   }
 
@@ -39,7 +41,7 @@ export class Store {
 
   public startAddLine = () => {
     // Use a real modal dialog in the future
-    const direction = promptEnum<Direction | "v" | "h", Direction>(
+    const direction = promptEnum<"vertical" | "v" | "horizontal" | "h", "vertical" | "horizontal">(
       "Direction of the lines",
       ["vertical", "v", "horizontal", "h"],
       (value) => value.startsWith("v") ? "vertical" : "horizontal"
@@ -52,12 +54,21 @@ export class Store {
     const spacing = promptInteger("Spacing between seats (size of a seat: 50)")
     if (spacing === undefined) return
 
-    this.update({
-      action: addingLine({
-        direction, numberOfSeats, spacing,
-        x: 0, y: 0
+    if (direction === "horizontal") {
+      this.update({
+        action: addingSeats(arrayFill(numberOfSeats, index => ({
+          x: (seatWidth + spacing) * index,
+          y: 0
+        })))
       })
-    })
+    } else {
+      this.update({
+        action: addingSeats(arrayFill(numberOfSeats, index => ({
+          x: 0,
+          y: (seatHeight + spacing) * index
+        })))
+      })
+    }
   }
 
   public confirmAction = () => {
@@ -65,9 +76,17 @@ export class Store {
     const action = state.action
     if (action) {
       switch (action.type) {
-        case "addingSeat":
+        case "addingSeats":
+          const nextSeatId = this.nextSeatId()
           this.update({
-            seats: [...state.seats, action.seat],
+            seats: [
+              ...state.seats,
+              ...action.seats.map((seatPosition, index) => ({
+                id: nextSeatId + index,
+                x: seatPosition.x + action.position.x,
+                y: seatPosition.y + action.position.y
+              }))
+            ],
             action: undefined
           })
           break
@@ -85,65 +104,33 @@ export class Store {
             action: undefined
           })
           break
-
-        case "addingLine":
-          // We need to use the `Math.round` function because sometimes, a seat will be between two px so alignment will not work.
-          // Visually, there is no difference
-          const nextSeatId = this.nextSeatId()
-          const addedSeats = action.direction === "horizontal"
-            ? arrayFill(action.numberOfSeats, index => ({
-              id: nextSeatId + index,
-              x: Math.round(action.x + (seatWidth + action.spacing) * index),
-              y: Math.round(action.y)
-            }))
-            : arrayFill(action.numberOfSeats, index => ({
-              id: nextSeatId + index,
-              x: Math.round(action.x),
-              y: Math.round(action.y + (seatHeight + action.spacing) * index)
-            }))
-
-          this.update({
-            seats: [
-              ...state.seats,
-              ...addedSeats
-            ],
-            action: undefined
-          })
-          break
       }
     }
   }
 
-  public updateMousePosition = ({x, y}: { x: number, y: number }) => {
+  public updateMousePosition = (position: Pos) => {
     const action = this.state.action
     if (action) {
       switch (action.type) {
-        case "addingSeat":
+        case "addingSeats":
+          const containingRect = zoneToRect(zoneOfAddingSeats(action))
+          this.update({
+            action: {
+              ...action,
+              position: { x: position.x - containingRect.width / 2, y: position.y - containingRect.height / 2 }
+            }
+          })
+          break
+
         case "movingSeat":
           this.update({
             action: {
               ...action,
               seat: {
                 ...action.seat,
-                x: x - (seatWidth / 2),
-                y: y - (seatHeight / 2)
+                x: position.x - (seatWidth / 2),
+                y: position.y - (seatHeight / 2)
               }
-            }
-          })
-          break
-
-        case "addingLine":
-          const width = action.direction === "horizontal"
-            ? seatWidth * action.numberOfSeats + action.spacing * (action.numberOfSeats - 1)
-            : seatWidth
-          const height = action.direction === "vertical"
-            ? seatHeight * action.numberOfSeats + action.spacing * (action.numberOfSeats - 1)
-            : seatHeight
-          this.update({
-            action: {
-              ...action,
-              x: x - (width / 2),
-              y: y - (height / 2)
             }
           })
           break

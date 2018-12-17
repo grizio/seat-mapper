@@ -1,4 +1,6 @@
-import {Seat, seatHeight, seatWidth, Zone} from "./models"
+import {containingZone} from "./utils"
+import {Seat, seatHeight, seatWidth} from "./models/Seat"
+import {defaultPosition, Pos, Zone} from "./models/geometry"
 
 export interface State {
   action?: Action
@@ -6,24 +8,29 @@ export interface State {
 }
 
 export type Action
-  = AddingSeat
+  = AddingSeats
   | MovingSeat
-  | AddingLine
 
-export interface AddingSeat {
-  type: "addingSeat"
-  seat: Seat
+export interface AddingSeats {
+  type: "addingSeats"
+  seats: Array<Pos>
+  position: Pos
 }
 
-export function addingSeat(seat: Seat): AddingSeat {
+export function addingSeats(seats: Array<Pos>): AddingSeats {
   return {
-    type: "addingSeat",
-    seat: seat
+    type: "addingSeats",
+    seats: seats,
+    position: defaultPosition
   }
 }
 
-export function isAddingSeat(action: Action): action is AddingSeat {
-  return action.type === "addingSeat"
+export function isAddingSeats(action: Action): action is AddingSeats {
+  return action.type === "addingSeats"
+}
+
+export function zoneOfAddingSeats(action: AddingSeats): Zone {
+  return containingZone(action.seats.map(seat => ({ x1: seat.x, y1: seat.y, x2: seat.x + seatWidth, y2: seat.y + seatHeight })))
 }
 
 export interface MovingSeat {
@@ -40,48 +47,4 @@ export function movingSeat(seat: Seat): MovingSeat {
 
 export function isMovingSeat(action: Action): action is MovingSeat {
   return action.type === "movingSeat"
-}
-
-export type Direction = "vertical" | "horizontal"
-
-export interface AddingLine {
-  type: "addingLine"
-  direction: Direction
-  numberOfSeats: number
-  spacing: number
-  x: number
-  y: number
-}
-
-export function addingLine({direction, numberOfSeats, spacing, x, y}: { direction: Direction, numberOfSeats: number, spacing: number, x: number, y: number }): AddingLine {
-  return {
-    type: "addingLine",
-    direction,
-    numberOfSeats,
-    spacing,
-    x,
-    y
-  }
-}
-
-export function isAddingLine(action: Action): action is AddingLine {
-  return action.type === "addingLine"
-}
-
-export function zoneOfAddingLine(action: AddingLine): Zone {
-  if (action.direction === "horizontal") {
-    return {
-      x1: action.x,
-      y1: action.y,
-      x2: action.x + seatWidth * action.numberOfSeats + action.spacing * (action.numberOfSeats - 1),
-      y2: action.y + seatHeight
-    }
-  } else {
-    return {
-      x1: action.x,
-      y1: action.y,
-      x2: action.x + seatWidth,
-      y2: action.y + seatHeight * action.numberOfSeats + action.spacing * (action.numberOfSeats - 1)
-    }
-  }
 }
