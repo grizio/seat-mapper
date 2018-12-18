@@ -27,6 +27,7 @@ export default class MapCreator extends Component<Props, State> {
         add={this.startAddSeat}
         startAddLine={this.startAddLine}
         startAddGrid={this.startAddGrid}
+        renameSelectedSeat={this.renameSelectedSeat}
         removeSeat={this.removeSeat}
         cancelAction={this.cancelAction}
       />
@@ -34,6 +35,7 @@ export default class MapCreator extends Component<Props, State> {
         <Map
           state={state.state}
           startMoveSeat={this.startMoveSeat}
+          renameSeat={this.renameSeat}
           confirmAction={this.confirmAction}
         />
       </div>
@@ -44,6 +46,8 @@ export default class MapCreator extends Component<Props, State> {
   startMoveSeat = (id: number) => this.store.startMoveSeat(id)
   startAddLine = () => this.store.startAddLine()
   startAddGrid = () => this.store.startAddGrid()
+  renameSeat = (id: number) => this.store.renameSeat(id)
+  renameSelectedSeat = () => this.store.renameSelectedSeat()
   removeSeat = () => this.store.removeSeat()
   confirmAction = () => this.store.confirmAction()
   cancelAction = () => this.store.cancelAction()
@@ -59,6 +63,12 @@ export default class MapCreator extends Component<Props, State> {
       case "Backspace":
       case "Delete":
         this.store.removeSeat()
+        break
+      case "r":
+      case "R":
+        if (!event.ctrlKey && !event.altKey) {
+          this.store.renameSelectedSeat()
+        }
         break
     }
   }

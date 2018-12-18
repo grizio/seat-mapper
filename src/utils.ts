@@ -1,5 +1,14 @@
 import {Zone} from "./models/geometry"
 
+export function promptString(message: string): string | undefined {
+  const value = prompt(message)
+  if (value !== null) {
+    return value
+  } else {
+    return undefined
+  }
+}
+
 export function promptInteger(message: string): number | undefined {
   let value: string | null = null
   do {

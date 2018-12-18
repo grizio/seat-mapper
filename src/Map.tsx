@@ -1,11 +1,12 @@
 import {h} from "preact"
 import {Shadow} from "./Shadow";
 import {isMovingSeat, State} from "./State"
-import {Seat} from "./models/Seat"
+import {Seat, seatHeight, seatWidth} from "./models/Seat"
 
 interface Props {
   state: State
   startMoveSeat: (id: number) => void
+  renameSeat: (id: number) => void
   confirmAction: () => void
 }
 
@@ -24,12 +25,27 @@ export function Map(props: Props) {
 function renderSeat(seat: Seat, props: Props) {
   const action = props.state.action
   const movingSeatId = action !== undefined && isMovingSeat(action) ? action.seat.id : undefined
+
+  const onClick = (event: MouseEvent) => {
+    if (event.ctrlKey) {
+      props.renameSeat(seat.id)
+    } else {
+      props.startMoveSeat(seat.id)
+    }
+  }
+
   return (
-    <g id={`seat-${seat.id}`} onClick={() => props.startMoveSeat(seat.id)}>
-      <rect x={seat.x} y={seat.y} width={50} height={50}
+    <g id={`seat-${seat.id}`} onClick={onClick}>
+      <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
             fill={seat.id === movingSeatId ? "#ccc" : "#fff"}
             stroke="black"
       />
+      <text x={seat.x + seatWidth / 2} y={seat.y + seatHeight / 2}
+        {...{
+          "dominant-baseline": "middle",
+          "text-anchor": "middle"
+        }}
+      >{seat.name}</text>
     </g>
   )
 }

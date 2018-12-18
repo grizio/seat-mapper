@@ -1,5 +1,5 @@
 import {addingSeats, isMovingSeat, movingSeat, State, zoneOfAddingSeats} from "./State"
-import {arrayFill, promptEnum, promptInteger} from "./utils"
+import {arrayFill, promptEnum, promptInteger, promptString} from "./utils"
 import {Pos, defaultPosition} from "./models/geometry"
 import {seatHeight, seatWidth} from "./models/Seat"
 import {zoneToRect} from "./models/adapters"
@@ -101,6 +101,31 @@ export class Store {
     })
   }
 
+  public renameSeat = (id: number, removeAction: boolean = false) => {
+    const seat = this.state.seats.find(_ => _.id === id)
+    if (seat !== undefined) {
+      const seatName = promptString(`New seat name (current: ${seat.name || "-"})`)
+      if (seatName === undefined) return
+      this.update({
+        seats: this.state.seats.map(currentSeat => {
+          if (currentSeat.id === seat.id) {
+            return {...currentSeat, name: seatName}
+          } else {
+            return currentSeat
+          }
+        }),
+        action: removeAction ? undefined : this.state.action
+      })
+    }
+  }
+
+  public renameSelectedSeat = () => {
+    const action = this.state.action
+    if (action && isMovingSeat(action)) {
+      this.renameSeat(action.seat.id, true)
+    }
+  }
+
   public removeSeat = () => {
     const action = this.state.action
     if (action && isMovingSeat(action)) {
@@ -123,6 +148,7 @@ export class Store {
               ...state.seats,
               ...action.seats.map((seatPosition, index) => ({
                 id: nextSeatId + index,
+                name: "",
                 x: seatPosition.x + action.position.x,
                 y: seatPosition.y + action.position.y
               }))
