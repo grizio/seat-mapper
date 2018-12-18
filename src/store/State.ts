@@ -1,6 +1,5 @@
-import {containingZone} from "utils"
 import {Seat, seatHeight, seatWidth} from "models/Seat"
-import {defaultPosition, Pos, Zone} from "models/geometry"
+import {containingZone, defaultPosition, Pos, Zone} from "models/geometry"
 
 export interface State {
   seats: Array<Seat>

@@ -8,10 +8,12 @@ import {
   State,
   zoneOfAddingSeats
 } from "./State"
-import {arrayFill, promptEnum, promptInteger, promptString} from "utils"
 import {Pos, defaultPosition, translatePosition, differencePosition, negativePosition} from "models/geometry"
 import {seatHeight, seatWidth} from "models/Seat"
 import {zoneToRect} from "models/adapters"
+import addLineModal from "../view/modal/AddLineModal"
+import {arrayFill} from "../utils/array"
+import {promptInteger, promptString} from "../utils/view"
 
 export class Store {
   private state: State
@@ -49,35 +51,24 @@ export class Store {
   }
 
   public startAddLine = () => {
-    // Use a real modal dialog in the future
-    const direction = promptEnum<"vertical" | "v" | "horizontal" | "h", "vertical" | "horizontal">(
-      "Direction of the lines",
-      ["vertical", "v", "horizontal", "h"],
-      (value) => value.startsWith("v") ? "vertical" : "horizontal"
-    )
-    if (direction === undefined) return
-
-    const numberOfSeats = promptInteger("Number of seats")
-    if (numberOfSeats === undefined) return
-
-    const spacing = promptInteger("Spacing between seats (size of a seat: 50)")
-    if (spacing === undefined) return
-
-    if (direction === "horizontal") {
-      this.update({
-        action: addingSeats(arrayFill(numberOfSeats, index => ({
-          x: (seatWidth + spacing) * index,
-          y: 0
-        })))
+    addLineModal()
+      .then(({ direction, numberOfSeats,  spacing}) => {
+        if (direction === "horizontal") {
+          this.update({
+            action: addingSeats(arrayFill(numberOfSeats, index => ({
+              x: (seatWidth + spacing) * index,
+              y: 0
+            })))
+          })
+        } else {
+          this.update({
+            action: addingSeats(arrayFill(numberOfSeats, index => ({
+              x: 0,
+              y: (seatHeight + spacing) * index
+            })))
+          })
+        }
       })
-    } else {
-      this.update({
-        action: addingSeats(arrayFill(numberOfSeats, index => ({
-          x: 0,
-          y: (seatHeight + spacing) * index
-        })))
-      })
-    }
   }
 
   public startAddGrid = () => {
