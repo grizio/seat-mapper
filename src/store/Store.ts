@@ -11,9 +11,10 @@ import {
 import {Pos, defaultPosition, translatePosition, differencePosition, negativePosition} from "models/geometry"
 import {seatHeight, seatWidth} from "models/Seat"
 import {zoneToRect} from "models/adapters"
-import addLineModal from "../view/modal/AddLineModal"
-import {arrayFill} from "../utils/array"
-import {promptInteger, promptString} from "../utils/view"
+import addLineModal from "view/modal/AddLineModal"
+import addGridModal from "view/modal/AddGridModal"
+import {arrayFill} from "utils/array"
+import {promptString} from "utils/view"
 
 export class Store {
   private state: State
@@ -72,33 +73,19 @@ export class Store {
   }
 
   public startAddGrid = () => {
-    // Use a real modal dialog in the future
-    const numberOfRows = promptInteger("Number of rows")
-    if (numberOfRows === undefined) return
-
-    const numberOfColumns = promptInteger("Number of seats per row")
-    if (numberOfColumns === undefined) return
-
-    const columnSpacing = promptInteger("Spacing between two rows (size of a seat: 50)")
-    if (columnSpacing === undefined) return
-
-    const rowSpacing = promptInteger("Spacing between two seats on the same row (size of a seat: 50)")
-    if (rowSpacing === undefined) return
-
-    const shift = promptInteger("Shift between two rows (size of a seat: 50)")
-    if (shift === undefined) return
-
-    const grid = arrayFill(numberOfRows, (rowIndex) => {
-      return arrayFill(numberOfColumns, (columnIndex) => {
-        return {
-          x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
-          y: (seatHeight + columnSpacing) * rowIndex
-        }
+    addGridModal()
+      .then(({numberOfRows, numberOfColumns, columnSpacing, rowSpacing, shift}) => {
+        this.update({
+          action: addingSeats(arrayFill(numberOfRows, (rowIndex) => {
+            return arrayFill(numberOfColumns, (columnIndex) => {
+              return {
+                x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
+                y: (seatHeight + columnSpacing) * rowIndex
+              }
+            })
+          }).flat())
+        })
       })
-    }).flat()
-    this.update({
-      action: addingSeats(grid)
-    })
   }
 
   public renameSeat = (id: number, removeAction: boolean = false) => {

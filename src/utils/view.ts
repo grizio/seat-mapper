@@ -38,19 +38,6 @@ export function promptString(message: string): string | undefined {
   }
 }
 
-export function promptInteger(message: string): number | undefined {
-  let value: string | null = null
-  do {
-    value = prompt(message)
-  } while (value !== null && isNaN(parseInt(value, 10)))
-
-  if (value !== null) {
-    return parseInt(value, 10)
-  } else {
-    return undefined
-  }
-}
-
 export function visuallyEqual(first: number, second: number) {
   return Math.round(first) === Math.round(second)
 }
