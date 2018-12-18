@@ -1,5 +1,5 @@
 import {h, render} from 'preact'
-import MapCreator from './MapCreator'
+import MapCreator from 'view/MapCreator'
 
 customElements.define("theater-mapper", class extends HTMLElement {
   private readonly shadow: ShadowRoot
