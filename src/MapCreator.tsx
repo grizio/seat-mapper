@@ -4,6 +4,7 @@ import {Toolbar} from "./Toolbar"
 import {Map} from "./Map"
 import {Store} from "./Store"
 import {State as StoreState} from "./State"
+import {defaultPosition} from "./models/geometry"
 
 interface Props {
 }
@@ -17,7 +18,7 @@ export default class MapCreator extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    this.store = new Store({seats: []}, state => this.setState({state}))
+    this.store = new Store({translation: defaultPosition, seats: []}, state => this.setState({state}))
   }
 
   render({}: Props, state: State): preact.ComponentChild {
@@ -31,7 +32,7 @@ export default class MapCreator extends Component<Props, State> {
         removeSeat={this.removeSeat}
         cancelAction={this.cancelAction}
       />
-      <div class="map-container" onMouseMove={this.mousemove}>
+      <div class="map-container" onMouseMove={this.mousemove} onMouseDown={this.mousedown} onMouseUp={this.mouseup}>
         <Map
           state={state.state}
           startMoveSeat={this.startMoveSeat}
@@ -51,10 +52,21 @@ export default class MapCreator extends Component<Props, State> {
   removeSeat = () => this.store.removeSeat()
   confirmAction = () => this.store.confirmAction()
   cancelAction = () => this.store.cancelAction()
+
   mousemove = (event: MouseEvent) => this.store.updateMousePosition({
     x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,
     y: event.clientY - (event.currentTarget as HTMLElement).offsetTop
   })
+  mousedown = (event: MouseEvent) => {
+    if (event.shiftKey) {
+      this.store.startGraping({
+        x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,
+        y: event.clientY - (event.currentTarget as HTMLElement).offsetTop
+      })
+    }
+  }
+  mouseup = () => this.store.endGraping()
+
   onKeyPress = (event: KeyboardEvent) => {
     switch (event.key) {
       case "Escape":

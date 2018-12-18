@@ -1,6 +1,15 @@
-import {addingSeats, isMovingSeat, movingSeat, State, zoneOfAddingSeats} from "./State"
+import {
+  addingSeats,
+  graping,
+  isAddingSeats,
+  isGraping,
+  isMovingSeat,
+  movingSeat,
+  State,
+  zoneOfAddingSeats
+} from "./State"
 import {arrayFill, promptEnum, promptInteger, promptString} from "./utils"
-import {Pos, defaultPosition} from "./models/geometry"
+import {Pos, defaultPosition, translatePosition, differencePosition, negativePosition} from "./models/geometry"
 import {seatHeight, seatWidth} from "./models/Seat"
 import {zoneToRect} from "./models/adapters"
 
@@ -175,38 +184,60 @@ export class Store {
   }
 
   public cancelAction = () => {
+    if (this.state.action && isGraping(this.state.action)) {
+      this.update({
+        translation: this.state.action.mapStartingPosition,
+        action: undefined
+      })
+    } else {
+      this.update({
+        action: undefined
+      })
+    }
+  }
+
+  public updateMousePosition = (clientPosition: Pos) => {
+    const position: Pos = translatePosition(clientPosition, negativePosition(this.state.translation))
+    const action = this.state.action
+    if (action) {
+      if (isAddingSeats(action)) {
+        const containingRect = zoneToRect(zoneOfAddingSeats(action))
+        this.update({
+          action: {
+            ...action,
+            position: {x: position.x - containingRect.width / 2, y: position.y - containingRect.height / 2}
+          }
+        })
+      } else if (isMovingSeat(action)) {
+        this.update({
+          action: {
+            ...action,
+            seat: {
+              ...action.seat,
+              x: position.x - (seatWidth / 2),
+              y: position.y - (seatHeight / 2)
+            }
+          }
+        })
+      } else if (isGraping(action)) {
+        this.update({
+          translation: translatePosition(action.mapStartingPosition, differencePosition(action.clientStartingPosition, clientPosition))
+        })
+      }
+    }
+  }
+
+  public startGraping = (clientPosition: Pos) => {
     this.update({
-      action: undefined
+      action: graping(clientPosition, this.state.translation)
     })
   }
 
-  public updateMousePosition = (position: Pos) => {
-    const action = this.state.action
-    if (action) {
-      switch (action.type) {
-        case "addingSeats":
-          const containingRect = zoneToRect(zoneOfAddingSeats(action))
-          this.update({
-            action: {
-              ...action,
-              position: { x: position.x - containingRect.width / 2, y: position.y - containingRect.height / 2 }
-            }
-          })
-          break
-
-        case "movingSeat":
-          this.update({
-            action: {
-              ...action,
-              seat: {
-                ...action.seat,
-                x: position.x - (seatWidth / 2),
-                y: position.y - (seatHeight / 2)
-              }
-            }
-          })
-          break
-      }
+  public endGraping = () => {
+    if (this.state.action && isGraping(this.state.action)) {
+      this.update({
+        action: undefined
+      })
     }
   }
 }

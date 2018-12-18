@@ -3,13 +3,15 @@ import {Seat, seatHeight, seatWidth} from "./models/Seat"
 import {defaultPosition, Pos, Zone} from "./models/geometry"
 
 export interface State {
-  action?: Action
   seats: Array<Seat>
+  translation: Pos
+  action?: Action
 }
 
 export type Action
   = AddingSeats
   | MovingSeat
+  | Graping
 
 export interface AddingSeats {
   type: "addingSeats"
@@ -47,4 +49,21 @@ export function movingSeat(seat: Seat): MovingSeat {
 
 export function isMovingSeat(action: Action): action is MovingSeat {
   return action.type === "movingSeat"
+}
+
+export interface Graping {
+  type: "graping"
+  clientStartingPosition: Pos
+  mapStartingPosition: Pos
+}
+
+export function graping(clientStartingPosition: Pos, mapStartingPosition: Pos): Graping {
+  return {
+    type: "graping",
+    clientStartingPosition, mapStartingPosition
+  }
+}
+
+export function isGraping(action: Action): action is Graping {
+  return action.type === "graping"
 }

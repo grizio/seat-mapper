@@ -14,10 +14,12 @@ export function Map(props: Props) {
   const {state, confirmAction} = props
   return (
     <svg class="map">
-      {
-        state.seats.map(seat => renderSeat(seat, props))
-      }
-      <Shadow state={state} confirmAction={confirmAction}/>
+      <g transform={`translate(${state.translation.x}, ${state.translation.y})`}>
+        {
+          state.seats.map(seat => renderSeat(seat, props))
+        }
+        <Shadow state={state} confirmAction={confirmAction}/>
+      </g>
     </svg>
   )
 }
@@ -29,7 +31,7 @@ function renderSeat(seat: Seat, props: Props) {
   const onClick = (event: MouseEvent) => {
     if (event.ctrlKey) {
       props.renameSeat(seat.id)
-    } else {
+    } else if (!event.altKey && !event.shiftKey) {
       props.startMoveSeat(seat.id)
     }
   }
