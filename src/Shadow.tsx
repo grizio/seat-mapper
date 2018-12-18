@@ -1,9 +1,9 @@
 import {h} from "preact"
-import {AddingSeats, isAddingSeats, isMovingSeat, State, zoneOfAddingSeats} from "./State"
+import {AddingSeats, isAddingSeats, isMovingSeat, State, zoneOfAddingSeats} from "store/State"
 import {visuallyEqual} from "./utils"
-import {seatToZone, zoneToRect} from "./models/adapters"
-import {seatHeight, seatWidth} from "./models/Seat"
-import {Line, Pos, translateZone, Zone} from "./models/geometry"
+import {seatToZone, zoneToRect} from "models/adapters"
+import {seatHeight, seatWidth} from "models/Seat"
+import {Line, Pos, translateZone, Zone} from "models/geometry"
 
 interface Props {
   state: State

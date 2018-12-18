@@ -1,6 +1,6 @@
 import {h} from "preact"
+import {State} from "store/State"
 import {Shadow} from "./Shadow";
-import {State} from "./State"
 import SeatElement from "./SeatElement"
 
 interface Props {

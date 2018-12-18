@@ -1,7 +1,6 @@
 import {Component, h} from "preact"
-import {isMovingSeat} from "./State"
-import {Seat, seatHeight, seatWidth} from "./models/Seat"
-import {State as StoreState} from "./State"
+import {Seat, seatHeight, seatWidth} from "models/Seat"
+import {isMovingSeat, State as StoreState} from "store/State"
 
 interface Props {
   storeState: StoreState

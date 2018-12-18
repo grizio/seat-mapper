@@ -8,10 +8,10 @@ import {
   State,
   zoneOfAddingSeats
 } from "./State"
-import {arrayFill, promptEnum, promptInteger, promptString} from "./utils"
-import {Pos, defaultPosition, translatePosition, differencePosition, negativePosition} from "./models/geometry"
-import {seatHeight, seatWidth} from "./models/Seat"
-import {zoneToRect} from "./models/adapters"
+import {arrayFill, promptEnum, promptInteger, promptString} from "utils"
+import {Pos, defaultPosition, translatePosition, differencePosition, negativePosition} from "models/geometry"
+import {seatHeight, seatWidth} from "models/Seat"
+import {zoneToRect} from "models/adapters"
 
 export class Store {
   private state: State
