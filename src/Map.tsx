@@ -1,7 +1,7 @@
 import {h} from "preact"
 import {Shadow} from "./Shadow";
-import {isMovingSeat, State} from "./State"
-import {Seat, seatHeight, seatWidth} from "./models/Seat"
+import {State} from "./State"
+import SeatElement from "./SeatElement"
 
 interface Props {
   state: State
@@ -16,38 +16,17 @@ export function Map(props: Props) {
     <svg class="map">
       <g transform={`translate(${state.translation.x}, ${state.translation.y})`}>
         {
-          state.seats.map(seat => renderSeat(seat, props))
+          state.seats.map(seat => (
+            <SeatElement
+              storeState={props.state}
+              seat={seat}
+              startMoveSeat={props.startMoveSeat}
+              renameSeat={props.renameSeat}
+            />
+          ))
         }
         <Shadow state={state} confirmAction={confirmAction}/>
       </g>
     </svg>
-  )
-}
-
-function renderSeat(seat: Seat, props: Props) {
-  const action = props.state.action
-  const movingSeatId = action !== undefined && isMovingSeat(action) ? action.seat.id : undefined
-
-  const onClick = (event: MouseEvent) => {
-    if (event.ctrlKey) {
-      props.renameSeat(seat.id)
-    } else if (!event.altKey && !event.shiftKey) {
-      props.startMoveSeat(seat.id)
-    }
-  }
-
-  return (
-    <g id={`seat-${seat.id}`} onClick={onClick}>
-      <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
-            fill={seat.id === movingSeatId ? "#ccc" : "#fff"}
-            stroke="black"
-      />
-      <text x={seat.x + seatWidth / 2} y={seat.y + seatHeight / 2}
-        {...{
-          "dominant-baseline": "middle",
-          "text-anchor": "middle"
-        }}
-      >{seat.name}</text>
-    </g>
   )
 }
