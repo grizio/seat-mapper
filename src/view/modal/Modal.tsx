@@ -60,6 +60,10 @@ export function promisedModal<Output>(componentFactory: ComponentFactory<Compone
             display: "flex",
             justifyContent: "flex-end",
             borderTop: "1px solid #ccc"
+          },
+
+          ".row": {
+            display: "flex"
           }
         })),
         h(componentFactory, {onSubmit, onCancel})

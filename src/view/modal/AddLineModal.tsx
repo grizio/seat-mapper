@@ -32,47 +32,53 @@ class AddLineModal extends Component<Props, State> {
   render(_: Props, state: State) {
     return (
       <Modal title="Add a line of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
-        <div class="field">
-          <p class="field-label">Direction</p>
-          <label>
-            <input type="radio" name="add-line-direction" value="horizontal"
-                   checked={state.direction === "horizontal"}
-                   onChange={this.updateDirection}/>
-            Horizontal
-          </label>
-          <label>
-            <input type="radio" name="add-line-direction" value="vertical"
-                   checked={state.direction === "vertical"}
-                   onChange={this.updateDirection}/>
-            Vertical
-          </label>
+        <div class="row">
+          <div class="col">
+            <div class="field">
+              <p class="field-label">Direction</p>
+              <label>
+                <input type="radio" name="add-line-direction" value="horizontal"
+                       checked={state.direction === "horizontal"}
+                       onChange={this.updateDirection}/>
+                Horizontal
+              </label>
+              <label>
+                <input type="radio" name="add-line-direction" value="vertical"
+                       checked={state.direction === "vertical"}
+                       onChange={this.updateDirection}/>
+                Vertical
+              </label>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-line-number-of-seats">Number of seats</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-line-number-of-seats" id="add-line-number-of-seats" min="1"
+                       value={state.numberOfSeats.toString()}
+                       onInput={this.updateNumberOfSeats}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-line-spacing">Spacing between seats</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-line-spacing" id="add-line-spacing" min="0"
+                       value={state.spacing.toString()}
+                       onInput={this.updateSpacing}/>
+              </p>
+            </div>
+          </div>
+
+          <div class="col">
+            {this.renderPreview(state)}
+          </div>
         </div>
-
-        <div class="field">
-          <p class="field-label">
-            <label for="add-line-number-of-seats">Number of seats</label>
-          </p>
-
-          <p>
-            <input type="number" name="add-line-number-of-seats" id="add-line-number-of-seats" min="1"
-                   value={state.numberOfSeats.toString()}
-                   onInput={this.updateNumberOfSeats}/>
-          </p>
-        </div>
-
-        <div class="field">
-          <p class="field-label">
-            <label for="add-line-spacing">Spacing between seats</label>
-          </p>
-
-          <p>
-            <input type="number" name="add-line-spacing" id="add-line-spacing" min="0"
-                   value={state.spacing.toString()}
-                   onInput={this.updateSpacing}/>
-          </p>
-        </div>
-
-        {this.renderPreview(state)}
       </Modal>
     )
   }

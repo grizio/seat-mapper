@@ -36,67 +36,73 @@ class AddGridModal extends Component<Props, State> {
   render(_: Props, state: State) {
     return (
       <Modal title="Add a grid of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
-        <div class="field">
-          <p class="field-label">
-            <label for="add-grid-number-of-rows">Number of rows</label>
-          </p>
+        <div class="row">
+          <div class="col">
+            <div class="field">
+              <p class="field-label">
+                <label for="add-grid-number-of-rows">Number of rows</label>
+              </p>
 
-          <p>
-            <input type="number" name="add-grid-number-of-rows" id="add-line-number-of-rows" min="1"
-                   value={state.numberOfRows.toString()}
-                   onInput={this.updateNumberOfRows}/>
-          </p>
+              <p>
+                <input type="number" name="add-grid-number-of-rows" id="add-line-number-of-rows" min="1"
+                       value={state.numberOfRows.toString()}
+                       onInput={this.updateNumberOfRows}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-grid-number-of-columns">Number of seats per row</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-grid-number-of-columns" id="add-grid-number-of-columns" min="1"
+                       value={state.numberOfColumns.toString()}
+                       onInput={this.updateNumberOfColumns}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-grid-column-spacing">Spacing between two rows</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-grid-column-spacing" id="add-grid-column-spacing" min="0"
+                       value={state.columnSpacing.toString()}
+                       onInput={this.updateColumnSpacing}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-grid-row-spacing">Spacing between two seats in a row</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-grid-row-spacing" id="add-grid-row-spacing" min="0"
+                       value={state.rowSpacing.toString()}
+                       onInput={this.updateRowSpacing}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-grid-shift">Shift between two rows</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-grid-shift" id="add-grid-shift" min="0"
+                       value={state.shift.toString()}
+                       onInput={this.updateShift}/>
+              </p>
+            </div>
+          </div>
+
+          <div class="col">
+            {this.renderPreview(state)}
+          </div>
         </div>
-
-        <div class="field">
-          <p class="field-label">
-            <label for="add-grid-number-of-columns">Number of seats per row</label>
-          </p>
-
-          <p>
-            <input type="number" name="add-grid-number-of-columns" id="add-grid-number-of-columns" min="1"
-                   value={state.numberOfColumns.toString()}
-                   onInput={this.updateNumberOfColumns}/>
-          </p>
-        </div>
-
-        <div class="field">
-          <p class="field-label">
-            <label for="add-grid-column-spacing">Spacing between two rows</label>
-          </p>
-
-          <p>
-            <input type="number" name="add-grid-column-spacing" id="add-grid-column-spacing" min="0"
-                   value={state.columnSpacing.toString()}
-                   onInput={this.updateColumnSpacing}/>
-          </p>
-        </div>
-
-        <div class="field">
-          <p class="field-label">
-            <label for="add-grid-row-spacing">Spacing between two seats in a row</label>
-          </p>
-
-          <p>
-            <input type="number" name="add-grid-row-spacing" id="add-grid-row-spacing" min="0"
-                   value={state.rowSpacing.toString()}
-                   onInput={this.updateRowSpacing}/>
-          </p>
-        </div>
-
-        <div class="field">
-          <p class="field-label">
-            <label for="add-grid-shift">Shift between two rows</label>
-          </p>
-
-          <p>
-            <input type="number" name="add-grid-shift" id="add-grid-shift" min="0"
-                   value={state.shift.toString()}
-                   onInput={this.updateShift}/>
-          </p>
-        </div>
-
-        {this.renderPreview(state)}
       </Modal>
     )
   }
