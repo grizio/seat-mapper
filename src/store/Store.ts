@@ -14,12 +14,12 @@ import {
   differencePosition,
   negativePosition,
   translateSeat,
-  containingZone, zoneTopLeftPosition
+  containingZone, zoneTopLeftPosition, translateZone
 } from 'models/geometry'
 import { seatToZone, zoneToRect } from 'models/adapters'
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
-import {promptString} from "utils/view"
+import { magnet, promptString } from 'utils/view'
 import {generateSeatGrid, generateSeatLine} from "utils/generators"
 
 export class Store {
@@ -200,10 +200,13 @@ export class Store {
           }
         })
       } else if (isMovingSeats(action)) {
+        const newPosition = translatePosition(position, negativePosition(action.positionInAction))
+        const containerZone = containingZone(action.seats.map(seatToZone))
+        const magnetizedPosition = magnet(translateZone(containerZone, newPosition), translateZone(containerZone, action.initialPosition))
         this.update({
           action: {
             ...action,
-            position: translatePosition(position, negativePosition(action.positionInAction))
+            position: translatePosition(newPosition, magnetizedPosition)
           }
         })
       } else if (isGraping(action)) {

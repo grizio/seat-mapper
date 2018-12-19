@@ -1,8 +1,15 @@
-import { zoneToRect } from 'models/adapters'
-import { Line, Pos, translateSeat, translateZone, Zone } from 'models/geometry'
+import { seatToZone, zoneToRect } from 'models/adapters'
+import { containingZone, Line, Pos, translateSeat, translateZone, Zone } from 'models/geometry'
 import { Seat, seatHeight, seatWidth } from 'models/Seat'
 import { h } from 'preact'
-import { ActionSeatContainer, isAddingSeats, isMovingSeats, State, zoneOfActionSeatContainer } from 'store/State'
+import {
+  ActionSeatContainer,
+  isAddingSeats,
+  isMovingSeats,
+  MovingSeats,
+  State,
+  zoneOfActionSeatContainer
+} from 'store/State'
 import { visuallyEqual } from 'utils/view'
 
 interface Props {
@@ -15,6 +22,11 @@ export function Shadow({state, confirmAction}: Props) {
   if (action !== undefined) {
     return (
       <g id="shadow">
+        {
+          isMovingSeats(action)
+            ? renderInitialZoneLines(action)
+            : undefined
+        }
         {
           isAddingSeats(action) || isMovingSeats(action) && action.position !== action.initialPosition
             ? renderShadowSeats(action, confirmAction)
@@ -118,4 +130,17 @@ function renderAlignmentLines(zone: Zone, seats: Array<Pos>) {
       stroke="#aaa"
     />
   ))
+}
+
+function renderInitialZoneLines(action: MovingSeats) {
+  const zone = translateZone(containingZone(action.seats.map(seatToZone)), action.initialPosition)
+  const rect = zoneToRect(zone)
+  return (
+    <rect x={rect.x} y={rect.y} width={rect.width} height={rect.height}
+          fill="transparent" stroke="#aaa"
+          {...{
+            "stroke-dasharray": "3 2"
+          }}
+    />
+  )
 }
