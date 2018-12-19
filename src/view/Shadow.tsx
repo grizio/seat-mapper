@@ -1,9 +1,9 @@
-import {h} from "preact"
-import {AddingSeats, isAddingSeats, isMovingSeat, State, zoneOfAddingSeats} from "store/State"
-import {visuallyEqual} from "utils/view"
-import {seatToZone, zoneToRect} from "models/adapters"
-import {seatHeight, seatWidth} from "models/Seat"
-import {Line, Pos, translateZone, Zone} from "models/geometry"
+import { zoneToRect } from 'models/adapters'
+import { Line, Pos, translateSeat, translateZone, Zone } from 'models/geometry'
+import { Seat, seatHeight, seatWidth } from 'models/Seat'
+import { h } from 'preact'
+import { ActionSeatContainer, isAddingSeats, isMovingSeats, State, zoneOfActionSeatContainer } from 'store/State'
+import { visuallyEqual } from 'utils/view'
 
 interface Props {
   state: State
@@ -13,52 +13,48 @@ interface Props {
 export function Shadow({state, confirmAction}: Props) {
   const action = state.action
   if (action !== undefined) {
-    if (isAddingSeats(action)) {
-      return (
-        <g id="shadow">
-          {renderShadowSeats(action, confirmAction)}
-          {renderAlignmentLines(translateZone(zoneOfAddingSeats(action), action.position), state.seats)}
-        </g>
-      )
-    } else if (isMovingSeat(action)) {
-      return (
-        <g id="shadow">
-          {renderShadowSeat(action.seat, confirmAction)}
-          {renderAlignmentLines(seatToZone(action.seat), state.seats)}
-        </g>
-      )
-    } else {
-      return <g id="shadow"/>
-    }
+    return (
+      <g id="shadow">
+        {
+          isAddingSeats(action) || isMovingSeats(action) && action.position !== action.initialPosition
+            ? renderShadowSeats(action, confirmAction)
+            : undefined
+        }
+        {
+          isAddingSeats(action) || isMovingSeats(action)
+            ? renderAlignmentLines(translateZone(zoneOfActionSeatContainer(action), action.position), state.seats)
+            : undefined
+        }
+      </g>
+    )
   } else {
     return <g id="shadow"/>
   }
 }
 
-function renderShadowSeats(action: AddingSeats, confirmAction: () => void) {
-  const container = zoneToRect(zoneOfAddingSeats(action))
+function renderShadowSeats(action: ActionSeatContainer, confirmAction: () => void) {
+  const container = zoneToRect(zoneOfActionSeatContainer(action))
   return (
-    <g onClick={confirmAction}>
+    <g onMouseUp={confirmAction}>
       <rect x={container.x + action.position.x} y={container.y + action.position.y}
             width={container.width} height={container.height}
             fill="transparent" stroke="transparent"
       />
       {
         action.seats
-          .map(seat => ({x: seat.x + action.position.x, y: seat.y + action.position.y}))
-          .map(_ => renderShadowSeat(_))
+          .map(seat => translateSeat(seat, action.position))
+          .map(renderShadowSeat)
       }
     </g>
   )
 }
 
-function renderShadowSeat(seat: Pos, confirmAction?: () => void) {
+function renderShadowSeat(seat: Seat) {
   return (
     <rect x={seat.x}
           y={seat.y}
           width={seatWidth}
           height={seatHeight}
-          onClick={confirmAction}
           fill="transparent"
           strokeWidth={1}
           stroke="#555"

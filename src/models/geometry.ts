@@ -1,3 +1,5 @@
+import { Seat } from 'models/Seat'
+
 export interface Line {
   x1: number
   y1: number
@@ -56,6 +58,14 @@ export function translateZone(zone: Zone, translationFromZero: Pos): Zone {
   }
 }
 
+export function translateSeat(seat: Seat, translationFromZero: Pos): Seat {
+  return {
+    ...seat,
+    x: seat.x + translationFromZero.x,
+    y: seat.y + translationFromZero.y,
+  }
+}
+
 export function containingZone(zones: Array<Zone>): Zone {
   if (zones.length === 0) {
     return { x1: 0, y1: 0, x2: 0, y2: 0 }
@@ -68,5 +78,12 @@ export function containingZone(zones: Array<Zone>): Zone {
       x2: Math.max(acc.x2, zone.x2),
       y2: Math.max(acc.y2, zone.y2)
     }), head)
+  }
+}
+
+export function zoneTopLeftPosition(zone: Zone): Pos {
+  return {
+    x: zone.x1,
+    y: zone.y1
   }
 }

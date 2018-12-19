@@ -3,19 +3,28 @@ import {containingZone, defaultPosition, Pos, Zone} from "models/geometry"
 
 export interface State {
   seats: Array<Seat>
+  selectedSeatIds: Array<number>
   translation: Pos
+  mousePosition: Pos
   action?: Action
 }
 
 export type Action
   = AddingSeats
-  | MovingSeat
+  | MovingSeats
   | Graping
 
-export interface AddingSeats {
-  type: "addingSeats"
+export interface ActionSeatContainer {
   seats: Array<Seat>
   position: Pos
+}
+
+export function zoneOfActionSeatContainer(action: ActionSeatContainer): Zone {
+  return containingZone(action.seats.map(seat => ({ x1: seat.x, y1: seat.y, x2: seat.x + seatWidth, y2: seat.y + seatHeight })))
+}
+
+export interface AddingSeats extends ActionSeatContainer {
+  type: "addingSeats"
 }
 
 export function addingSeats(seats: Array<Seat>): AddingSeats {
@@ -30,24 +39,21 @@ export function isAddingSeats(action: Action): action is AddingSeats {
   return action.type === "addingSeats"
 }
 
-export function zoneOfAddingSeats(action: AddingSeats): Zone {
-  return containingZone(action.seats.map(seat => ({ x1: seat.x, y1: seat.y, x2: seat.x + seatWidth, y2: seat.y + seatHeight })))
+export interface MovingSeats extends ActionSeatContainer {
+  type: "movingSeats"
+  initialPosition: Pos
+  positionInAction: Pos
 }
 
-export interface MovingSeat {
-  type: "movingSeat"
-  seat: Seat
-}
-
-export function movingSeat(seat: Seat): MovingSeat {
+export function movingSeats(seats: Array<Seat>, initialPosition: Pos, positionInAction: Pos): MovingSeats {
   return {
-    type: "movingSeat",
-    seat
+    type: "movingSeats",
+    seats, initialPosition, position: initialPosition, positionInAction
   }
 }
 
-export function isMovingSeat(action: Action): action is MovingSeat {
-  return action.type === "movingSeat"
+export function isMovingSeats(action: Action): action is MovingSeats {
+  return action.type === "movingSeats"
 }
 
 export interface Graping {

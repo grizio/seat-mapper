@@ -3,18 +3,24 @@ import {
   graping,
   isAddingSeats,
   isGraping,
-  isMovingSeat,
-  movingSeat,
+  isMovingSeats,
+  movingSeats,
   State,
-  zoneOfAddingSeats
+  zoneOfActionSeatContainer
 } from "./State"
-import {Pos, translatePosition, differencePosition, negativePosition} from "models/geometry"
-import {seatHeight, seatWidth} from "models/Seat"
-import {zoneToRect} from "models/adapters"
+import {
+  Pos,
+  translatePosition,
+  differencePosition,
+  negativePosition,
+  translateSeat,
+  containingZone, zoneTopLeftPosition
+} from 'models/geometry'
+import { seatToZone, zoneToRect } from 'models/adapters'
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
 import {promptString} from "utils/view"
-import {generateSeatGrid, generateSeatLine} from "../utils/generators"
+import {generateSeatGrid, generateSeatLine} from "utils/generators"
 
 export class Store {
   private state: State
@@ -45,15 +51,6 @@ export class Store {
   private nextSeatId = () => {
     const idMax = this.state.seats.reduce((acc, seat) => Math.max(acc, seat.id), 0)
     return idMax + 1
-  }
-
-  public startMoveSeat = (id: number) => {
-    const seat = this.state.seats.find(_ => _.id === id)
-    if (seat !== undefined) {
-      this.update({
-        action: movingSeat(seat)
-      })
-    }
   }
 
   public startAddLine = () => {
@@ -92,21 +89,49 @@ export class Store {
     }
   }
 
-  public renameSelectedSeat = () => {
-    const action = this.state.action
-    if (action && isMovingSeat(action)) {
-      this.renameSeat(action.seat.id, true)
+  public renameSelectedSeats = () => {
+    this.state.selectedSeatIds.forEach(_ => this.renameSeat(_, false))
+  }
+
+  public removeSeats = () => {
+    this.update({
+      seats: this.state.seats.filter(seat => this.state.selectedSeatIds.every(_ => _ !== seat.id)),
+      selectedSeatIds: []
+    })
+  }
+
+  public toggleSelectSeat = (id: number) => {
+    if (this.state.selectedSeatIds.some(_ => _ === id)) {
+      this.update({
+        selectedSeatIds: this.state.selectedSeatIds.filter(_ => _ !== id),
+        action: undefined
+      })
+    } else {
+      const seatToSelect = this.state.seats.find(_ => _.id === id)
+      if (seatToSelect !== undefined) {
+        this.update({
+          selectedSeatIds: [
+            ...this.state.selectedSeatIds,
+            seatToSelect.id
+          ]
+        })
+      }
     }
   }
 
-  public removeSeat = () => {
-    const action = this.state.action
-    if (action && isMovingSeat(action)) {
-      this.update({
-        seats: this.state.seats.filter(_ => _.id !== action.seat.id),
-        action: undefined
-      })
-    }
+  public startMoveSeats = () => {
+    const zone = containingZone(this.getSelectedSeats().map(seatToZone))
+    this.update({
+      action: movingSeats(
+        this.getSelectedSeats().map(seat => translateSeat(seat, negativePosition({x: zone.x1, y: zone.y1}))),
+        zoneTopLeftPosition(zone),
+        differencePosition(zoneTopLeftPosition(zone), this.state.mousePosition)
+      )
+    })
+  }
+
+  private getSelectedSeats = () => {
+    return this.state.seats.filter(_ => this.state.selectedSeatIds.includes(_.id))
   }
 
   public confirmAction = () => {
@@ -130,12 +155,12 @@ export class Store {
           })
           break
 
-        case "movingSeat":
-          const movingSeat = action.seat
+        case "movingSeats":
           this.update({
             seats: state.seats.map(seat => {
-              if (seat.id === movingSeat.id) {
-                return movingSeat
+              const movingSeat = action.seats.find(_ => _.id === seat.id)
+              if (movingSeat !== undefined) {
+                return translateSeat(movingSeat, action.position)
               } else {
                 return seat
               }
@@ -155,6 +180,7 @@ export class Store {
       })
     } else {
       this.update({
+        selectedSeatIds: [],
         action: undefined
       })
     }
@@ -162,25 +188,22 @@ export class Store {
 
   public updateMousePosition = (clientPosition: Pos) => {
     const position: Pos = translatePosition(clientPosition, negativePosition(this.state.translation))
+    this.update({ mousePosition: position })
     const action = this.state.action
     if (action) {
       if (isAddingSeats(action)) {
-        const containingRect = zoneToRect(zoneOfAddingSeats(action))
+        const containingRect = zoneToRect(zoneOfActionSeatContainer(action))
         this.update({
           action: {
             ...action,
-            position: {x: position.x - containingRect.width / 2, y: position.y - containingRect.height / 2}
+            position: { x: position.x - containingRect.width / 2, y: position.y - containingRect.height / 2 }
           }
         })
-      } else if (isMovingSeat(action)) {
+      } else if (isMovingSeats(action)) {
         this.update({
           action: {
             ...action,
-            seat: {
-              ...action.seat,
-              x: position.x - (seatWidth / 2),
-              y: position.y - (seatHeight / 2)
-            }
+            position: translatePosition(position, negativePosition(action.positionInAction))
           }
         })
       } else if (isGraping(action)) {

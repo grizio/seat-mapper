@@ -1,10 +1,10 @@
-import {Component, h} from "preact"
-import {defaultPosition} from "models/geometry"
-import {State as StoreState} from "store/State"
-import {Store} from "store/Store"
-import {Styles} from "./Styles"
-import {Toolbar} from "./Toolbar"
-import {Map} from "./Map"
+import { defaultPosition } from 'models/geometry'
+import { Component, h } from 'preact'
+import { State as StoreState } from 'store/State'
+import { Store } from 'store/Store'
+import { Map } from './Map'
+import { Styles } from './Styles'
+import { Toolbar } from './Toolbar'
 
 interface Props {
 }
@@ -18,7 +18,15 @@ export default class MapCreator extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    this.store = new Store({translation: defaultPosition, seats: []}, state => this.setState({state}))
+    this.store = new Store(
+      {
+        seats: [],
+        selectedSeatIds: [],
+        translation: defaultPosition,
+        mousePosition: defaultPosition
+      },
+      state => this.setState({ state })
+    )
   }
 
   render({}: Props, state: State): preact.ComponentChild {
@@ -28,14 +36,15 @@ export default class MapCreator extends Component<Props, State> {
         add={this.store.startAddSeat}
         startAddLine={this.store.startAddLine}
         startAddGrid={this.store.startAddGrid}
-        renameSelectedSeat={this.store.renameSelectedSeat}
-        removeSeat={this.store.removeSeat}
+        renameSelectedSeat={this.store.renameSelectedSeats}
+        removeSeat={this.store.removeSeats}
         cancelAction={this.store.cancelAction}
       />
       <div class="map-container" onMouseMove={this.mousemove} onMouseDown={this.mousedown} onMouseUp={this.mouseup}>
         <Map
           state={state.state}
-          startMoveSeat={this.store.startMoveSeat}
+          toggleSelectSeat={this.store.toggleSelectSeat}
+          startMoveSeats={this.store.startMoveSeats}
           renameSeat={this.store.renameSeat}
           confirmAction={this.store.confirmAction}
         />
@@ -64,12 +73,12 @@ export default class MapCreator extends Component<Props, State> {
         break
       case "Backspace":
       case "Delete":
-        this.store.removeSeat()
+        this.store.removeSeats()
         break
       case "r":
       case "R":
         if (!event.ctrlKey && !event.altKey) {
-          this.store.renameSelectedSeat()
+          this.store.renameSelectedSeats()
         }
         break
     }

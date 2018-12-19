@@ -5,7 +5,8 @@ import SeatElement from "./SeatElement"
 
 interface Props {
   state: State
-  startMoveSeat: (id: number) => void
+  toggleSelectSeat: (id: number) => void
+  startMoveSeats: () => void
   renameSeat: (id: number) => void
   confirmAction: () => void
 }
@@ -20,7 +21,8 @@ export function Map(props: Props) {
             <SeatElement
               storeState={props.state}
               seat={seat}
-              startMoveSeat={props.startMoveSeat}
+              toggleSelectSeat={props.toggleSelectSeat}
+              startMoveSeats={props.startMoveSeats}
               renameSeat={props.renameSeat}
             />
           ))

@@ -1,11 +1,12 @@
 import {Component, h} from "preact"
 import {Seat, seatHeight, seatWidth} from "models/Seat"
-import {isMovingSeat, State as StoreState} from "store/State"
+import {State as StoreState} from "store/State"
 
 interface Props {
   storeState: StoreState
   seat: Seat
-  startMoveSeat: (id: number) => void
+  toggleSelectSeat: (id: number) => void
+  startMoveSeats: () => void
   renameSeat: (id: number) => void
 }
 
@@ -18,14 +19,11 @@ export default class SeatElement extends Component<Props, State> {
     super(props)
   }
 
-  render({storeState, seat}: Props) {
-    const action = storeState.action
-    const movingSeatId = action !== undefined && isMovingSeat(action) ? action.seat.id : undefined
-
+  render({seat}: Props) {
     return (
-      <g id={`seat-${seat.id}`} onClick={this.onClick}>
+      <g id={`seat-${seat.id}`} onClick={this.onClick} onMouseDown={this.onMouseDown}>
         <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
-              fill={seat.id === movingSeatId ? "#ccc" : "#fff"}
+              fill={this.isSelected() ? "#ccc" : "#fff"}
               stroke="black"
         />
         <text x={seat.x + seatWidth / 2} y={seat.y + seatHeight / 2}
@@ -38,11 +36,21 @@ export default class SeatElement extends Component<Props, State> {
     )
   }
 
+  isSelected = () => {
+    return this.props.storeState.selectedSeatIds.includes(this.props.seat.id)
+  }
+
   onClick = (event: MouseEvent) => {
     if (event.ctrlKey) {
       this.props.renameSeat(this.props.seat.id)
     } else if (!event.altKey && !event.shiftKey) {
-      this.props.startMoveSeat(this.props.seat.id)
+      this.props.toggleSelectSeat(this.props.seat.id)
+    }
+  }
+
+  onMouseDown = () => {
+    if (this.isSelected()) {
+      this.props.startMoveSeats()
     }
   }
 }
