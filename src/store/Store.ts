@@ -8,13 +8,14 @@ import {
   State,
   zoneOfAddingSeats
 } from "./State"
-import {Pos, defaultPosition, translatePosition, differencePosition, negativePosition} from "models/geometry"
+import {Pos, translatePosition, differencePosition, negativePosition} from "models/geometry"
 import {seatHeight, seatWidth} from "models/Seat"
 import {zoneToRect} from "models/adapters"
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
 import {arrayFill} from "utils/array"
 import {promptString} from "utils/view"
+import {generateSeatLine} from "../utils/generators"
 
 export class Store {
   private state: State
@@ -33,7 +34,12 @@ export class Store {
 
   public startAddSeat = () => {
     this.update({
-      action: addingSeats([defaultPosition])
+      action: addingSeats([{
+        id: -1,
+        name: "",
+        x: 0,
+        y: 0
+      }])
     })
   }
 
@@ -53,22 +59,10 @@ export class Store {
 
   public startAddLine = () => {
     addLineModal()
-      .then(({ direction, numberOfSeats,  spacing}) => {
-        if (direction === "horizontal") {
-          this.update({
-            action: addingSeats(arrayFill(numberOfSeats, index => ({
-              x: (seatWidth + spacing) * index,
-              y: 0
-            })))
-          })
-        } else {
-          this.update({
-            action: addingSeats(arrayFill(numberOfSeats, index => ({
-              x: 0,
-              y: (seatHeight + spacing) * index
-            })))
-          })
-        }
+      .then((parameters) => {
+        this.update({
+          action: addingSeats(generateSeatLine(parameters))
+        })
       })
   }
 
@@ -79,6 +73,8 @@ export class Store {
           action: addingSeats(arrayFill(numberOfRows, (rowIndex) => {
             return arrayFill(numberOfColumns, (columnIndex) => {
               return {
+                id: -1,
+                name: "",
                 x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
                 y: (seatHeight + columnSpacing) * rowIndex
               }
@@ -133,11 +129,11 @@ export class Store {
           this.update({
             seats: [
               ...state.seats,
-              ...action.seats.map((seatPosition, index) => ({
+              ...action.seats.map((seatInfo, index) => ({
                 id: nextSeatId + index,
-                name: "",
-                x: seatPosition.x + action.position.x,
-                y: seatPosition.y + action.position.y
+                name: seatInfo.name,
+                x: seatInfo.x + action.position.x,
+                y: seatInfo.y + action.position.y
               }))
             ],
             action: undefined

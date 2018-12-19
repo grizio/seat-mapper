@@ -14,11 +14,11 @@ export type Action
 
 export interface AddingSeats {
   type: "addingSeats"
-  seats: Array<Pos>
+  seats: Array<Seat>
   position: Pos
 }
 
-export function addingSeats(seats: Array<Pos>): AddingSeats {
+export function addingSeats(seats: Array<Seat>): AddingSeats {
   return {
     type: "addingSeats",
     seats: seats,

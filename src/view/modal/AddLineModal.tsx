@@ -1,8 +1,7 @@
 import {Component, h} from "preact"
-import {seatHeight, seatWidth} from "models/Seat"
 import Preview from "./Preview"
 import {Modal, promisedModal} from "./Modal"
-import {arrayFill} from "../../utils/array"
+import {Changing, Direction, generateSeatLine, Order} from "../../utils/generators"
 
 interface Props {
   onSubmit: (state: State) => void
@@ -10,9 +9,13 @@ interface Props {
 }
 
 interface State {
-  direction: string
+  direction: Direction
   numberOfSeats: number
   spacing: number
+  firstLetter: string
+  firstNumber: number
+  changing: Changing
+  order: Order
 }
 
 export default function addLineModal(): Promise<State> {
@@ -25,7 +28,11 @@ class AddLineModal extends Component<Props, State> {
     this.state = {
       direction: "horizontal",
       numberOfSeats: 1,
-      spacing: 0
+      spacing: 0,
+      firstLetter: "A",
+      firstNumber: 1,
+      changing: "number",
+      order: "ascending"
     }
   }
 
@@ -73,6 +80,62 @@ class AddLineModal extends Component<Props, State> {
                        onInput={this.updateSpacing}/>
               </p>
             </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-line-first-letter">First letter</label>
+              </p>
+
+              <p>
+                <input type="text" name="add-line-first-letter" id="add-line-first-letter"
+                       value={state.firstLetter}
+                       onInput={this.updateFirstLetter}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-line-first-number">First number</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-line-first-number" id="add-line-first-number" min="0"
+                       value={state.firstNumber.toString()}
+                       onInput={this.updateFirstNumber}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">Changing</p>
+              <label>
+                <input type="radio" name="add-line-changing" value="letter"
+                       checked={state.changing === "letter"}
+                       onChange={this.updateChanging}/>
+                Letter
+              </label>
+              <label>
+                <input type="radio" name="add-line-changing" value="number"
+                       checked={state.changing === "number"}
+                       onChange={this.updateChanging}/>
+                Number
+              </label>
+            </div>
+
+            <div class="field">
+              <p class="field-label">Order</p>
+              <label>
+                <input type="radio" name="add-line-order" value="ascending"
+                       checked={state.order === "ascending"}
+                       onChange={this.updateOrder}/>
+                Ascending
+              </label>
+              <label>
+                <input type="radio" name="add-line-order" value="descending"
+                       checked={state.order === "descending"}
+                       onChange={this.updateOrder}/>
+                Descending
+              </label>
+            </div>
           </div>
 
           <div class="col">
@@ -84,25 +147,11 @@ class AddLineModal extends Component<Props, State> {
   }
 
   renderPreview(state: State) {
-    const seats = state.direction === "horizontal"
-      ? arrayFill(state.numberOfSeats, index => ({
-        id: -1,
-        name: "",
-        x: (seatWidth + state.spacing) * index,
-        y: 0
-      }))
-      : arrayFill(state.numberOfSeats, index => ({
-        id: -1,
-        name: "",
-        x: 0,
-        y: (seatHeight + state.spacing) * index
-      }))
-
-    return <Preview seats={seats}/>
+    return <Preview seats={generateSeatLine(state)}/>
   }
 
   updateDirection = (event: Event) => {
-    this.setState({direction: (event.target as HTMLInputElement).value})
+    this.setState({direction: (event.target as HTMLInputElement).value as Direction})
   }
 
   updateNumberOfSeats = (event: Event) => {
@@ -111,6 +160,22 @@ class AddLineModal extends Component<Props, State> {
 
   updateSpacing = (event: Event) => {
     this.setState({spacing: parseInt((event.target as HTMLInputElement).value, 10)})
+  }
+
+  updateFirstLetter = (event: Event) => {
+    this.setState({firstLetter: (event.target as HTMLInputElement).value})
+  }
+
+  updateFirstNumber = (event: Event) => {
+    this.setState({firstNumber: parseInt((event.target as HTMLInputElement).value, 10)})
+  }
+
+  updateChanging = (event: Event) => {
+    this.setState({changing: (event.target as HTMLInputElement).value as Changing})
+  }
+
+  updateOrder = (event: Event) => {
+    this.setState({order: (event.target as HTMLInputElement).value as Order})
   }
 
   onSubmit = () => this.props.onSubmit(this.state)
