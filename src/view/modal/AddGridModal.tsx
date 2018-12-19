@@ -1,8 +1,7 @@
 import {Component, h} from "preact"
-import {seatHeight, seatWidth} from "models/Seat"
 import Preview from "./Preview"
 import {Modal, promisedModal} from "./Modal"
-import {arrayFill} from "../../utils/array"
+import {Direction, generateSeatGrid, Order} from "utils/generators"
 
 interface Props {
   onSubmit: (state: State) => void
@@ -15,6 +14,11 @@ interface State {
   columnSpacing: number
   rowSpacing: number
   shift: number
+  firstLetter: string
+  firstNumber: number
+  letterDirection: Direction
+  letterOrder: Order
+  numberOrder: Order
 }
 
 export default function addGridModal(): Promise<State> {
@@ -29,7 +33,12 @@ class AddGridModal extends Component<Props, State> {
       numberOfColumns: 1,
       columnSpacing: 0,
       rowSpacing: 0,
-      shift: 0
+      shift: 0,
+      firstLetter: "A",
+      firstNumber: 1,
+      letterDirection: "horizontal",
+      letterOrder: "ascending",
+      numberOrder: "ascending"
     }
   }
 
@@ -97,6 +106,78 @@ class AddGridModal extends Component<Props, State> {
                        onInput={this.updateShift}/>
               </p>
             </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-line-first-letter">First letter</label>
+              </p>
+
+              <p>
+                <input type="text" name="add-line-first-letter" id="add-line-first-letter"
+                       value={state.firstLetter}
+                       onInput={this.updateFirstLetter}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">
+                <label for="add-line-first-number">First number</label>
+              </p>
+
+              <p>
+                <input type="number" name="add-line-first-number" id="add-line-first-number" min="0"
+                       value={state.firstNumber.toString()}
+                       onInput={this.updateFirstNumber}/>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="field-label">Letter direction</p>
+              <label>
+                <input type="radio" name="add-line-letter-direction" value="horizontal"
+                       checked={state.letterDirection === "horizontal"}
+                       onChange={this.updateLetterDirection}/>
+                Horizontal
+              </label>
+              <label>
+                <input type="radio" name="add-line-letter-direction" value="vertical"
+                       checked={state.letterDirection === "vertical"}
+                       onChange={this.updateLetterDirection}/>
+                Vertical
+              </label>
+            </div>
+
+            <div class="field">
+              <p class="field-label">Letter order</p>
+              <label>
+                <input type="radio" name="add-line-letter-order" value="ascending"
+                       checked={state.letterOrder === "ascending"}
+                       onChange={this.updateLetterOrder}/>
+                Ascending
+              </label>
+              <label>
+                <input type="radio" name="add-line-letter-order" value="descending"
+                       checked={state.letterOrder === "descending"}
+                       onChange={this.updateLetterOrder}/>
+                Descending
+              </label>
+            </div>
+
+            <div class="field">
+              <p class="field-label">Number order</p>
+              <label>
+                <input type="radio" name="add-line-number-order" value="ascending"
+                       checked={state.numberOrder === "ascending"}
+                       onChange={this.updateNumberOrder}/>
+                Ascending
+              </label>
+              <label>
+                <input type="radio" name="add-line-number-order" value="descending"
+                       checked={state.numberOrder === "descending"}
+                       onChange={this.updateNumberOrder}/>
+                Descending
+              </label>
+            </div>
           </div>
 
           <div class="col">
@@ -108,18 +189,7 @@ class AddGridModal extends Component<Props, State> {
   }
 
   renderPreview(state: State) {
-    return <Preview seats={
-      arrayFill(state.numberOfRows, (rowIndex) => {
-        return arrayFill(state.numberOfColumns, (columnIndex) => {
-          return {
-            id: -1,
-            name: "",
-            x: (seatWidth + state.rowSpacing) * columnIndex + (rowIndex * (state.shift) % (seatWidth + state.rowSpacing)),
-            y: (seatHeight + state.columnSpacing) * rowIndex
-          }
-        })
-      }).flat()
-    }/>
+    return <Preview seats={generateSeatGrid(state)}/>
   }
 
   updateNumberOfRows = (event: Event) => {
@@ -140,6 +210,26 @@ class AddGridModal extends Component<Props, State> {
 
   updateShift = (event: Event) => {
     this.setState({shift: parseInt((event.target as HTMLInputElement).value, 10)})
+  }
+
+  updateFirstLetter = (event: Event) => {
+    this.setState({firstLetter: (event.target as HTMLInputElement).value})
+  }
+
+  updateFirstNumber = (event: Event) => {
+    this.setState({firstNumber: parseInt((event.target as HTMLInputElement).value, 10)})
+  }
+
+  updateLetterDirection = (event: Event) => {
+    this.setState({letterDirection: (event.target as HTMLInputElement).value as Direction})
+  }
+
+  updateLetterOrder = (event: Event) => {
+    this.setState({letterOrder: (event.target as HTMLInputElement).value as Order})
+  }
+
+  updateNumberOrder = (event: Event) => {
+    this.setState({numberOrder: (event.target as HTMLInputElement).value as Order})
   }
 
   onSubmit = () => this.props.onSubmit(this.state)

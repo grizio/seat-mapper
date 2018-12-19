@@ -13,9 +13,8 @@ import {seatHeight, seatWidth} from "models/Seat"
 import {zoneToRect} from "models/adapters"
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
-import {arrayFill} from "utils/array"
 import {promptString} from "utils/view"
-import {generateSeatLine} from "../utils/generators"
+import {generateSeatGrid, generateSeatLine} from "../utils/generators"
 
 export class Store {
   private state: State
@@ -68,18 +67,9 @@ export class Store {
 
   public startAddGrid = () => {
     addGridModal()
-      .then(({numberOfRows, numberOfColumns, columnSpacing, rowSpacing, shift}) => {
+      .then((parameters) => {
         this.update({
-          action: addingSeats(arrayFill(numberOfRows, (rowIndex) => {
-            return arrayFill(numberOfColumns, (columnIndex) => {
-              return {
-                id: -1,
-                name: "",
-                x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
-                y: (seatHeight + columnSpacing) * rowIndex
-              }
-            })
-          }).flat())
+          action: addingSeats(generateSeatGrid(parameters))
         })
       })
   }

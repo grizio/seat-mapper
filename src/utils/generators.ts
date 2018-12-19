@@ -1,6 +1,10 @@
 import {Seat, seatHeight, seatWidth} from "../models/Seat"
 import {arrayFill} from "./array"
 
+export type Direction = "horizontal" | "vertical"
+export type Changing = "letter" | "number"
+export type Order = "ascending" | "descending"
+
 interface GenerateSeatLineParameters {
   direction: Direction
   numberOfSeats: number
@@ -10,9 +14,6 @@ interface GenerateSeatLineParameters {
   changing: Changing
   order: Order
 }
-export type Direction = "horizontal" | "vertical"
-export type Changing = "letter" | "number"
-export type Order = "ascending" | "descending"
 
 export function generateSeatLine({ direction, numberOfSeats, spacing, firstLetter, firstNumber, changing, order }: GenerateSeatLineParameters): Array<Seat> {
   const posX = (index: number) => direction === "horizontal" ? (seatWidth + spacing) * index : 0
@@ -74,4 +75,55 @@ function numberToString(input: number): string {
     current = Math.floor((current - 1) / 26)
   }
   return result
+}
+
+interface GenerateSeatGridParameters {
+  numberOfRows: number
+  numberOfColumns: number
+  columnSpacing: number
+  rowSpacing: number
+  shift: number
+  firstLetter: string
+  firstNumber: number
+  letterDirection: Direction
+  letterOrder: Order
+  numberOrder: Order
+}
+
+export function generateSeatGrid({
+  numberOfRows, numberOfColumns, columnSpacing, rowSpacing, shift,
+  firstLetter, firstNumber, letterDirection, letterOrder, numberOrder
+}: GenerateSeatGridParameters): Array<Seat> {
+  const letter = (index: number, maxNumber: number) => {
+    if (letterOrder === "ascending") {
+      return numberToString(stringToNumber(firstLetter) + index)
+    } else {
+      return numberToString(maxNumber + stringToNumber(firstLetter) - index - 1)
+    }
+  }
+  const number = (index: number, maxNumber: number) => {
+    if (numberOrder === "ascending") {
+      return firstNumber + index
+    } else {
+      return maxNumber + firstNumber - index - 1
+    }
+  }
+  const name = (rowIndex: number, columnIndex: number) => {
+    if (letterDirection === "horizontal") {
+      return `${letter(rowIndex, numberOfRows)}${number(columnIndex, numberOfColumns)}`
+    } else {
+      return `${letter(columnIndex, numberOfColumns)}${number(rowIndex, numberOfRows)}`
+    }
+  }
+
+  return arrayFill(numberOfRows, (rowIndex) => {
+    return arrayFill(numberOfColumns, (columnIndex) => {
+      return {
+        id: -1,
+        name: name(rowIndex, columnIndex),
+        x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
+        y: (seatHeight + columnSpacing) * rowIndex
+      }
+    })
+  }).flat()
 }
