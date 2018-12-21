@@ -22,7 +22,7 @@ interface State {
 }
 
 export default function addGridModal(): Promise<State> {
-  return promisedModal(AddGridModal)
+  return promisedModal(AddGridModal, {})
 }
 
 class AddGridModal extends Component<Props, State> {

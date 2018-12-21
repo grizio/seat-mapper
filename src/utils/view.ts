@@ -30,15 +30,6 @@ function normalizeKey(key: string): string {
   return key.replace(/[A-Z]/g, "-$&").toLowerCase()
 }
 
-export function promptString(message: string): string | undefined {
-  const value = prompt(message)
-  if (value !== null) {
-    return value
-  } else {
-    return undefined
-  }
-}
-
 export function visuallyEqual(first: number, second: number) {
   return Math.round(first) === Math.round(second)
 }

@@ -19,7 +19,7 @@ interface State {
 }
 
 export default function addLineModal(): Promise<State> {
-  return promisedModal(AddLineModal)
+  return promisedModal(AddLineModal, {})
 }
 
 class AddLineModal extends Component<Props, State> {

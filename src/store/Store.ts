@@ -19,8 +19,9 @@ import {
 import { seatToZone, zoneToRect } from 'models/adapters'
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
-import { magnet, promptString } from 'utils/view'
+import { magnet } from 'utils/view'
 import {generateSeatGrid, generateSeatLine} from "utils/generators"
+import renameSeatsModal from "../view/modal/RenameSeatsModal"
 
 export class Store {
   private state: State
@@ -71,26 +72,29 @@ export class Store {
       })
   }
 
-  public renameSeat = (id: number, removeAction: boolean = false) => {
-    const seat = this.state.seats.find(_ => _.id === id)
-    if (seat !== undefined) {
-      const seatName = promptString(`New seat name (current: ${seat.name || "-"})`)
-      if (seatName === undefined) return
-      this.update({
-        seats: this.state.seats.map(currentSeat => {
-          if (currentSeat.id === seat.id) {
-            return {...currentSeat, name: seatName}
-          } else {
-            return currentSeat
-          }
-        }),
-        action: removeAction ? undefined : this.state.action
-      })
-    }
+  public renameSeat = (id: number) => {
+    this.renameSeats([id])
   }
 
   public renameSelectedSeats = () => {
-    this.state.selectedSeatIds.forEach(_ => this.renameSeat(_, false))
+    this.renameSeats(this.state.selectedSeatIds)
+  }
+
+  private renameSeats = (seatIds: Array<number>) => {
+    const seats = this.state.seats.filter(_ => seatIds.includes(_.id))
+    renameSeatsModal(seats)
+      .then(({seats: seatPatches}) => {
+        this.update({
+          seats: this.state.seats.map(seat => {
+            const seatPatch = seatPatches.find(_ => _.id === seat.id)
+            if (seatPatch) {
+              return {...seat, name: seatPatch.name}
+            } else {
+              return seat
+            }
+          })
+        })
+      })
   }
 
   public removeSeats = () => {

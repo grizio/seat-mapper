@@ -6,7 +6,7 @@ interface ComponentFactoryLifecycle<Output> {
   onCancel: () => void
 }
 
-export function promisedModal<Output>(componentFactory: ComponentFactory<ComponentFactoryLifecycle<Output>>): Promise<Output> {
+export function promisedModal<Input, Output>(componentFactory: ComponentFactory<ComponentFactoryLifecycle<Output> & Input>, input: Input): Promise<Output> {
   return new Promise<Output>(((resolve, reject) => {
     const modalContainerNode = document.createElement("div")
     const shadow = modalContainerNode.attachShadow({mode: "open"})
@@ -66,7 +66,7 @@ export function promisedModal<Output>(componentFactory: ComponentFactory<Compone
             display: "flex"
           }
         })),
-        h(componentFactory, {onSubmit, onCancel})
+        h(componentFactory, Object.assign({}, {onSubmit, onCancel}, input))
       )
     )
     render(modal, shadow)
