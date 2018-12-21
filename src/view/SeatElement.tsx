@@ -5,7 +5,7 @@ import {State as StoreState} from "store/State"
 interface Props {
   storeState: StoreState
   seat: Seat
-  toggleSelectSeat: (id: number) => void
+  selectSeat: (id: number, adding: boolean) => void
   startMoveSeats: () => void
   renameSeat: (id: number) => void
 }
@@ -85,11 +85,7 @@ export default class SeatElement extends Component<Props, State> {
   }
 
   onClick = (event: MouseEvent) => {
-    if (event.ctrlKey) {
-      this.props.renameSeat(this.props.seat.id)
-    } else if (!event.altKey && !event.shiftKey) {
-      this.props.toggleSelectSeat(this.props.seat.id)
-    }
+    this.props.selectSeat(this.props.seat.id, event.ctrlKey)
   }
 
   onMouseDown = () => {

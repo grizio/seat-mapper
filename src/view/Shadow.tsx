@@ -1,5 +1,13 @@
 import { seatToZone, zoneToRect } from 'models/adapters'
-import {containingZone, Line, normalizeZone, Pos, translateSeat, translateZone, Zone} from "models/geometry"
+import {
+  containingZone,
+  Line,
+  normalizeZone,
+  Pos,
+  translateSeat,
+  translateZone,
+  Zone
+} from "models/geometry"
 import { Seat, seatHeight, seatWidth } from 'models/Seat'
 import { h } from 'preact'
 import {
@@ -28,7 +36,7 @@ export function Shadow(props: Props) {
             : undefined
         }
         {
-          isAddingSeats(action) || isMovingSeats(action) && action.position !== action.initialPosition
+          isAddingSeats(action) || isMovingSeats(action)
             ? renderShadowSeats(action, props)
             : undefined
         }

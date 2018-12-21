@@ -29,7 +29,6 @@ import {
   patchSeat,
   patchSeats, patchType,
   removeSeats, removeType,
-  seatById,
   seatsByIds, seatsByZone,
   Structure
 } from "../models/Structure"
@@ -115,22 +114,15 @@ export class Store {
     })
   }
 
-  public toggleSelectSeat = (id: number) => {
-    if (this.state.selectedSeatIds.some(_ => _ === id)) {
+  public selectSeat = (id: number, adding: boolean) => {
+    if (adding) {
       this.update({
-        selectedSeatIds: this.state.selectedSeatIds.filter(_ => _ !== id),
-        action: undefined
+        selectedSeatIds: [...this.state.selectedSeatIds, id]
       })
     } else {
-      const seatToSelect = seatById(this.state.structure, id)
-      if (seatToSelect !== undefined) {
-        this.update({
-          selectedSeatIds: [
-            ...this.state.selectedSeatIds,
-            seatToSelect.id
-          ]
-        })
-      }
+      this.update({
+        selectedSeatIds: [id]
+      })
     }
   }
 

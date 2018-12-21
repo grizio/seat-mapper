@@ -59,7 +59,7 @@ export default class MapCreator extends Component<Props, State> {
         <div class="map-container" onMouseMove={this.mousemove} onMouseDown={this.mousedown} onMouseUp={this.mouseup}>
           <Map
             state={state.state}
-            toggleSelectSeat={this.store.toggleSelectSeat}
+            selectSeat={this.store.selectSeat}
             deselectAllSeats={this.store.deselectAllSeats}
             startZoneSelection={this.store.startZoneSelection}
             startMoveSeats={this.store.startMoveSeats}

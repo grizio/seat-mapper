@@ -7,7 +7,7 @@ import {arrayWithoutUndefined} from "../utils/array"
 
 interface Props {
   state: State
-  toggleSelectSeat: (id: number) => void
+  selectSeat: (id: number, adding: boolean) => void
   deselectAllSeats: () => void
   startMoveSeats: () => void
   startZoneSelection: (event: MouseEvent) => void
@@ -33,7 +33,7 @@ export function Map(props: Props) {
             <SeatElement
               storeState={props.state}
               seat={seat}
-              toggleSelectSeat={props.toggleSelectSeat}
+              selectSeat={props.selectSeat}
               startMoveSeats={props.startMoveSeats}
               renameSeat={props.renameSeat}
             />
