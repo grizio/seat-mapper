@@ -33,7 +33,16 @@ export function Styles() {
       },
 
       ".map": {
-        flexGrow: 1
+        flexGrow: 1,
+        cursor: "default",
+        MozUserSelect: "none",
+        WebkitUserSelect: "none",
+        msUserSelect: "none",
+        userSelect: "none"
+      },
+
+      ".map:not(.map-action) rect, .map ellipse, .map text": {
+        cursor: "pointer"
       },
 
       ".right-panel": {

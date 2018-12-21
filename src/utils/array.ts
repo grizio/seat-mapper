@@ -30,3 +30,7 @@ export function arrayEqual<A>(array1: Array<A>, array2: Array<A>, comparaison: (
     return false
   }
 }
+
+export function arrayWithoutUndefined<A>(array: Array<A | undefined>): Array<A> {
+  return array.filter(_ => _ !== undefined) as Array<A>
+}

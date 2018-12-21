@@ -79,8 +79,8 @@ export default class MapCreator extends Component<Props, State> {
   }
 
   mousemove = (event: MouseEvent) => this.store.updateMousePosition({
-    x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,
-    y: event.clientY - (event.currentTarget as HTMLElement).offsetTop
+    x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft + document.body.scrollLeft,
+    y: event.clientY - (event.currentTarget as HTMLElement).offsetTop + document.body.scrollTop
   })
   mousedown = (event: MouseEvent) => {
     if (event.shiftKey) {
