@@ -2,6 +2,9 @@ import {Component, h} from "preact"
 import Preview from "./Preview"
 import {Modal, promisedModal} from "./Modal"
 import {Changing, Direction, generateSeatLine, Order} from "../../utils/generators"
+import RadioField from "../form/RadioField"
+import NumberField from "../form/NumberField"
+import StringField from "../form/StringField"
 
 interface Props {
   onSubmit: (state: State) => void
@@ -41,101 +44,55 @@ class AddLineModal extends Component<Props, State> {
       <Modal title="Add a line of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
         <div class="row">
           <div class="col">
-            <div class="field">
-              <p class="field-label">Direction</p>
-              <label>
-                <input type="radio" name="add-line-direction" value="horizontal"
-                       checked={state.direction === "horizontal"}
-                       onChange={this.updateDirection}/>
-                Horizontal
-              </label>
-              <label>
-                <input type="radio" name="add-line-direction" value="vertical"
-                       checked={state.direction === "vertical"}
-                       onChange={this.updateDirection}/>
-                Vertical
-              </label>
-            </div>
+            <RadioField name="add-line-direction"
+                        label="Direction"
+                        options={[
+                          {label: "Horizontal", value: "horizontal"},
+                          {label: "Vertical", value: "vertical"}
+                        ]}
+                        value={state.direction}
+                        onChange={this.updateDirection}/>
 
-            <div class="field">
-              <p class="field-label">
-                <label for="add-line-number-of-seats">Number of seats</label>
-              </p>
+            <NumberField name="add-line-number-of-seats"
+                         label="Number of seats"
+                         min={1}
+                         value={state.numberOfSeats}
+                         onChange={this.updateNumberOfSeats}/>
 
-              <p>
-                <input type="number" name="add-line-number-of-seats" id="add-line-number-of-seats" min="1"
-                       value={state.numberOfSeats.toString()}
-                       onInput={this.updateNumberOfSeats}/>
-              </p>
-            </div>
+            <NumberField name="add-line-spacing"
+                         label="Spacing between seats"
+                         min={0}
+                         value={state.spacing}
+                         onChange={this.updateSpacing}/>
 
-            <div class="field">
-              <p class="field-label">
-                <label for="add-line-spacing">Spacing between seats</label>
-              </p>
+            <StringField name="add-line-first-letter"
+                         label="First letter"
+                         value={state.firstLetter}
+                         onChange={this.updateFirstLetter}/>
 
-              <p>
-                <input type="number" name="add-line-spacing" id="add-line-spacing" min="0"
-                       value={state.spacing.toString()}
-                       onInput={this.updateSpacing}/>
-              </p>
-            </div>
+            <NumberField name="add-line-first-number"
+                         label="First number"
+                         min={0}
+                         value={state.firstNumber}
+                         onChange={this.updateFirstNumber}/>
+            
+            <RadioField name="add-line-changing"
+                        label="Changing"
+                        options={[
+                          {label: "Letter", value: "letter"},
+                          {label: "Number", value: "number"}
+                        ]}
+                        value={state.changing}
+                        onChange={this.updateChanging}/>
 
-            <div class="field">
-              <p class="field-label">
-                <label for="add-line-first-letter">First letter</label>
-              </p>
-
-              <p>
-                <input type="text" name="add-line-first-letter" id="add-line-first-letter"
-                       value={state.firstLetter}
-                       onInput={this.updateFirstLetter}/>
-              </p>
-            </div>
-
-            <div class="field">
-              <p class="field-label">
-                <label for="add-line-first-number">First number</label>
-              </p>
-
-              <p>
-                <input type="number" name="add-line-first-number" id="add-line-first-number" min="0"
-                       value={state.firstNumber.toString()}
-                       onInput={this.updateFirstNumber}/>
-              </p>
-            </div>
-
-            <div class="field">
-              <p class="field-label">Changing</p>
-              <label>
-                <input type="radio" name="add-line-changing" value="letter"
-                       checked={state.changing === "letter"}
-                       onChange={this.updateChanging}/>
-                Letter
-              </label>
-              <label>
-                <input type="radio" name="add-line-changing" value="number"
-                       checked={state.changing === "number"}
-                       onChange={this.updateChanging}/>
-                Number
-              </label>
-            </div>
-
-            <div class="field">
-              <p class="field-label">Order</p>
-              <label>
-                <input type="radio" name="add-line-order" value="ascending"
-                       checked={state.order === "ascending"}
-                       onChange={this.updateOrder}/>
-                Ascending
-              </label>
-              <label>
-                <input type="radio" name="add-line-order" value="descending"
-                       checked={state.order === "descending"}
-                       onChange={this.updateOrder}/>
-                Descending
-              </label>
-            </div>
+            <RadioField name="add-line-order"
+                        label="Order"
+                        options={[
+                          {label: "Ascending", value: "ascending"},
+                          {label: "Descending", value: "descending"}
+                        ]}
+                        value={state.order}
+                        onChange={this.updateOrder}/>
           </div>
 
           <div class="col">
@@ -150,33 +107,19 @@ class AddLineModal extends Component<Props, State> {
     return <Preview seats={generateSeatLine(state)}/>
   }
 
-  updateDirection = (event: Event) => {
-    this.setState({direction: (event.target as HTMLInputElement).value as Direction})
-  }
+  updateDirection = (direction: Direction) => this.setState({direction})
 
-  updateNumberOfSeats = (event: Event) => {
-    this.setState({numberOfSeats: parseInt((event.target as HTMLInputElement).value, 10)})
-  }
+  updateNumberOfSeats = (numberOfSeats: number) => this.setState({numberOfSeats})
 
-  updateSpacing = (event: Event) => {
-    this.setState({spacing: parseInt((event.target as HTMLInputElement).value, 10)})
-  }
+  updateSpacing = (spacing: number) => this.setState({spacing})
 
-  updateFirstLetter = (event: Event) => {
-    this.setState({firstLetter: (event.target as HTMLInputElement).value})
-  }
+  updateFirstLetter = (firstLetter: string) => this.setState({firstLetter})
 
-  updateFirstNumber = (event: Event) => {
-    this.setState({firstNumber: parseInt((event.target as HTMLInputElement).value, 10)})
-  }
+  updateFirstNumber = (firstNumber: number) => this.setState({firstNumber})
 
-  updateChanging = (event: Event) => {
-    this.setState({changing: (event.target as HTMLInputElement).value as Changing})
-  }
+  updateChanging = (changing: Changing) => this.setState({changing})
 
-  updateOrder = (event: Event) => {
-    this.setState({order: (event.target as HTMLInputElement).value as Order})
-  }
+  updateOrder = (order: Order) => this.setState({order})
 
   onSubmit = () => this.props.onSubmit(this.state)
 
