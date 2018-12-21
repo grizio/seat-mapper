@@ -1,5 +1,15 @@
 import {h, render} from 'preact'
 import MapCreator from 'view/MapCreator'
+import {Seat} from "./models/Seat"
+
+export class TheaterMapperChangeEvent extends Event {
+  public readonly seats: ReadonlyArray<Readonly<Seat>>
+
+  constructor(seats: Array<Seat>) {
+    super("change")
+    this.seats = Object.freeze([...seats.map(seat => ({...seat}))])
+  }
+}
 
 customElements.define("theater-mapper", class extends HTMLElement {
   private readonly shadow: ShadowRoot
@@ -11,7 +21,7 @@ customElements.define("theater-mapper", class extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return Object.keys({})
+    return ["initial-seats"]
   }
 
   connectedCallback() {
@@ -29,6 +39,13 @@ customElements.define("theater-mapper", class extends HTMLElement {
   }
 
   getProps() {
-    return {}
+    const initialSeatsAttribute = this.getAttribute("initial-seats")
+    const initialSeats = initialSeatsAttribute !== null ? JSON.parse(initialSeatsAttribute) : undefined
+    return {
+      initialSeats: initialSeats,
+      onChange: (seats: Array<Seat>) => {
+        this.dispatchEvent(new TheaterMapperChangeEvent(seats || []))
+      }
+    }
   }
 })

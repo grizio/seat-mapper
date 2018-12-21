@@ -22,6 +22,7 @@ import addGridModal from "view/modal/AddGridModal"
 import { magnet } from 'utils/view'
 import {generateSeatGrid, generateSeatLine} from "utils/generators"
 import renameSeatsModal from "../view/modal/RenameSeatsModal"
+import {Seat} from "../models/Seat"
 
 export class Store {
   private state: State
@@ -36,6 +37,14 @@ export class Store {
   private update(newState: Partial<State>) {
     this.state = {...this.state, ...newState}
     this.listener(this.state)
+  }
+
+  public reload = (seats: Array<Seat>) => {
+    this.update({
+      seats: seats,
+      selectedSeatIds: [],
+      action: undefined
+    })
   }
 
   public startAddSeat = () => {

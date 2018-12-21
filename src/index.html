@@ -37,5 +37,20 @@
 <div id="mapper">
   <theater-mapper></theater-mapper>
 </div>
+
+<script>
+  window.addEventListener("load", () => {
+    Array.from(document.querySelectorAll("theater-mapper")).forEach(theaterMapper => {
+      const storedTheaterMapperTest = sessionStorage.getItem("theater-mapper-test")
+      if (storedTheaterMapperTest !== null) {
+        theaterMapper.setAttribute("initial-seats", storedTheaterMapperTest)
+      }
+
+      theaterMapper.addEventListener("change", (event) => {
+        sessionStorage.setItem("theater-mapper-test", JSON.stringify(event.seats))
+      })
+    })
+  })
+</script>
 </body>
 </html>

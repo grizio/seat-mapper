@@ -5,8 +5,12 @@ import { Store } from 'store/Store'
 import { Map } from './Map'
 import { Styles } from './Styles'
 import { Toolbar } from './Toolbar'
+import {arrayEqual} from "../utils/array"
+import {Seat, seatEqual} from "../models/Seat"
 
 interface Props {
+  initialSeats: Array<Seat>
+  onChange: (seats: Array<Seat>) => void
 }
 
 interface State {
@@ -20,13 +24,26 @@ export default class MapCreator extends Component<Props, State> {
     super(props)
     this.store = new Store(
       {
-        seats: [],
+        seats: props.initialSeats || [],
         selectedSeatIds: [],
         translation: defaultPosition,
         mousePosition: defaultPosition
       },
-      state => this.setState({ state })
+      this.onStoreUpdate
     )
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    this.store.reload(nextProps.initialSeats || [])
+  }
+
+  onStoreUpdate = (state: StoreState) => {
+    const previousSeats = this.state.state !== undefined ? this.state.state.seats : []
+    const nextSeats = state.seats
+    if (!arrayEqual(previousSeats, nextSeats, seatEqual)) {
+      this.props.onChange(nextSeats)
+    }
+    this.setState({state})
   }
 
   render({}: Props, state: State): preact.ComponentChild {
