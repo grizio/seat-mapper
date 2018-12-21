@@ -1,15 +1,15 @@
 import { seatToZone, zoneToRect } from 'models/adapters'
-import { containingZone, Line, Pos, translateSeat, translateZone, Zone } from 'models/geometry'
+import {containingZone, Line, normalizeZone, Pos, translateSeat, translateZone, Zone} from "models/geometry"
 import { Seat, seatHeight, seatWidth } from 'models/Seat'
 import { h } from 'preact'
 import {
   ActionSeatContainer,
   isAddingSeats,
-  isMovingSeats,
+  isMovingSeats, isZoneSelection,
   MovingSeats,
   State,
-  zoneOfActionSeatContainer
-} from 'store/State'
+  zoneOfActionSeatContainer, ZoneSelection
+} from "store/State"
 import { visuallyEqual } from 'utils/view'
 
 interface Props {
@@ -35,6 +35,11 @@ export function Shadow({state, confirmAction}: Props) {
         {
           isAddingSeats(action) || isMovingSeats(action)
             ? renderAlignmentLines(translateZone(zoneOfActionSeatContainer(action), action.position), state.seats)
+            : undefined
+        }
+        {
+          isZoneSelection(action)
+            ? renderZoneSelection(action, confirmAction)
             : undefined
         }
       </g>
@@ -141,6 +146,16 @@ function renderInitialZoneLines(action: MovingSeats) {
           {...{
             "stroke-dasharray": "3 2"
           }}
+    />
+  )
+}
+
+function renderZoneSelection(action: ZoneSelection, confirmAction: () => void) {
+  const rect = zoneToRect(normalizeZone(action.zone))
+  return (
+    <rect x={rect.x} y={rect.y} width={rect.width} height={rect.height}
+          fill="transparent" stroke="#aaa"
+          onMouseUp={confirmAction}
     />
   )
 }

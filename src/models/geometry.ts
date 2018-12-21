@@ -81,9 +81,70 @@ export function containingZone(zones: Array<Zone>): Zone {
   }
 }
 
+export function zoneCornerPositions(zone: Zone): Array<Pos> {
+  return [
+    zoneTopLeftPosition(zone),
+    zoneTopRightPosition(zone),
+    zoneBottomLeftPosition(zone),
+    zoneBottomRightPosition(zone)
+  ]
+}
+
 export function zoneTopLeftPosition(zone: Zone): Pos {
   return {
     x: zone.x1,
     y: zone.y1
   }
+}
+
+export function zoneTopRightPosition(zone: Zone): Pos {
+  return {
+    x: zone.x2,
+    y: zone.y1
+  }
+}
+
+export function zoneBottomLeftPosition(zone: Zone): Pos {
+  return {
+    x: zone.x1,
+    y: zone.y2
+  }
+}
+
+export function zoneBottomRightPosition(zone: Zone): Pos {
+  return {
+    x: zone.x2,
+    y: zone.y2
+  }
+}
+
+export function normalizeZone(zone: Zone): Zone {
+  return {
+    x1: Math.min(zone.x1, zone.x2),
+    y1: Math.min(zone.y1, zone.y2),
+    x2: Math.max(zone.x1, zone.x2),
+    y2: Math.max(zone.y1, zone.y2)
+  }
+}
+
+export function isIncluded(zone: Zone, reference: Zone): boolean {
+  const hasZoneCornerInReference = zoneCornerPositions(zone).some(corner => isPositionInZone(corner, reference))
+  const hasReferenceCornerInZone = zoneCornerPositions(reference).some(corner => isPositionInZone(corner, zone))
+  const isIncludedHorizontally = (
+    zone.x1 <= reference.x1 && reference.x2 <= zone.x2 &&
+    reference.y1 <= zone.y1 && zone.y2 <= reference.y2
+  )
+  const isIncludedVertically = (
+    zone.y1 <= reference.y1 && reference.y2 <= zone.y2 &&
+    reference.x1 <= zone.x1 && zone.x2 <= reference.x2
+  )
+
+  return hasZoneCornerInReference || hasReferenceCornerInZone || isIncludedHorizontally || isIncludedVertically
+}
+
+export function isPositionInZone(pos: Pos, zone: Zone): boolean {
+  return (
+    zone.x1 <= pos.x && pos.x <= zone.x2 &&
+    zone.y1 <= pos.y && pos.y <= zone.y2
+  )
 }

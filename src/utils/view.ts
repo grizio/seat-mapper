@@ -69,3 +69,11 @@ function magnetY(zone: Zone, reference: Zone): number {
     return 0
   }
 }
+
+export function onCurrentElement<SpecificEvent extends Event>(handler: (event: SpecificEvent) => void) {
+  return (event: SpecificEvent) => {
+    if (event.currentTarget === event.target) {
+      handler(event)
+    }
+  }
+}

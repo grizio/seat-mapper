@@ -12,6 +12,7 @@ export interface State {
 export type Action
   = AddingSeats
   | MovingSeats
+  | ZoneSelection
   | Graping
 
 export interface ActionSeatContainer {
@@ -54,6 +55,23 @@ export function movingSeats(seats: Array<Seat>, initialPosition: Pos, positionIn
 
 export function isMovingSeats(action: Action): action is MovingSeats {
   return action.type === "movingSeats"
+}
+
+export interface ZoneSelection {
+  type: "zoneSelection"
+  zone: Zone
+  additionalSeats: boolean
+}
+
+export function zoneSelection(zone: Zone, additionalSeats: boolean): ZoneSelection {
+  return {
+    type: "zoneSelection",
+    zone, additionalSeats
+  }
+}
+
+export function isZoneSelection(action: Action): action is ZoneSelection {
+  return action.type === "zoneSelection"
 }
 
 export interface Graping {

@@ -3,10 +3,10 @@ import {
   graping,
   isAddingSeats,
   isGraping,
-  isMovingSeats,
+  isMovingSeats, isZoneSelection,
   movingSeats,
   State,
-  zoneOfActionSeatContainer
+  zoneOfActionSeatContainer, zoneSelection
 } from "./State"
 import {
   Pos,
@@ -14,8 +14,8 @@ import {
   differencePosition,
   negativePosition,
   translateSeat,
-  containingZone, zoneTopLeftPosition, translateZone
-} from 'models/geometry'
+  containingZone, zoneTopLeftPosition, translateZone, isIncluded, normalizeZone
+} from "models/geometry"
 import { seatToZone, zoneToRect } from 'models/adapters'
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
@@ -127,6 +127,17 @@ export class Store {
     this.update({ selectedSeatIds: [] })
   }
 
+  public startZoneSelection = (event: MouseEvent) => {
+    this.update({
+      action: zoneSelection({
+        x1: this.state.mousePosition.x,
+        y1: this.state.mousePosition.y,
+        x2: this.state.mousePosition.x,
+        y2: this.state.mousePosition.y
+      }, event.ctrlKey)
+    })
+  }
+
   public startMoveSeats = () => {
     const zone = containingZone(this.getSelectedSeats().map(seatToZone))
     this.update({
@@ -176,6 +187,16 @@ export class Store {
             action: undefined
           })
           break
+
+        case "zoneSelection":
+          const seatIdsInSelection = this.state.seats
+            .filter(seat => isIncluded(seatToZone(seat), normalizeZone(action.zone)))
+            .map(_ => _.id)
+          this.update({
+            selectedSeatIds: action.additionalSeats ? [...this.state.selectedSeatIds, ...seatIdsInSelection] : seatIdsInSelection,
+            action: undefined
+          })
+          break
       }
     }
   }
@@ -215,6 +236,17 @@ export class Store {
           action: {
             ...action,
             position: translatePosition(newPosition, magnetizedPosition)
+          }
+        })
+      } else if (isZoneSelection(action)) {
+        this.update({
+          action: {
+            ...action,
+            zone: {
+              ...action.zone,
+              x2: position.x,
+              y2: position.y
+            }
           }
         })
       } else if (isGraping(action)) {
