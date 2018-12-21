@@ -67,7 +67,13 @@ export default class MapCreator extends Component<Props, State> {
             confirmAction={this.store.confirmAction}
           />
         </div>
-        <RightPanel state={state.state} updateSeat={this.store.updateSeat}/>
+        <RightPanel
+          state={state.state}
+          updateSeat={this.store.updateSeat}
+          addType={this.store.addType}
+          updateType={this.store.updateType}
+          removeType={this.store.removeType}
+        />
       </div>
     </div>
   }

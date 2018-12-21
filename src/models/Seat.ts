@@ -1,5 +1,6 @@
 export interface Seat {
   id: number
+  type: number
   name: string
   x: number
   y: number

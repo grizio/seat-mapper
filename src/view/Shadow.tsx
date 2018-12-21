@@ -17,8 +17,8 @@ interface Props {
   confirmAction: () => void
 }
 
-export function Shadow({state, confirmAction}: Props) {
-  const action = state.action
+export function Shadow(props: Props) {
+  const action = props.state.action
   if (action !== undefined) {
     return (
       <g id="shadow">
@@ -29,17 +29,17 @@ export function Shadow({state, confirmAction}: Props) {
         }
         {
           isAddingSeats(action) || isMovingSeats(action) && action.position !== action.initialPosition
-            ? renderShadowSeats(action, confirmAction)
+            ? renderShadowSeats(action, props)
             : undefined
         }
         {
           isAddingSeats(action) || isMovingSeats(action)
-            ? renderAlignmentLines(translateZone(zoneOfActionSeatContainer(action), action.position), state.structure.seats)
+            ? renderAlignmentLines(translateZone(zoneOfActionSeatContainer(action), action.position), props.state.structure.seats)
             : undefined
         }
         {
           isZoneSelection(action)
-            ? renderZoneSelection(action, confirmAction)
+            ? renderZoneSelection(action, props.confirmAction)
             : undefined
         }
       </g>
@@ -49,10 +49,10 @@ export function Shadow({state, confirmAction}: Props) {
   }
 }
 
-function renderShadowSeats(action: ActionSeatContainer, confirmAction: () => void) {
+function renderShadowSeats(action: ActionSeatContainer, props: Props) {
   const container = zoneToRect(zoneOfActionSeatContainer(action))
   return (
-    <g onMouseUp={confirmAction}>
+    <g onMouseUp={props.confirmAction}>
       <rect x={container.x + action.position.x} y={container.y + action.position.y}
             width={container.width} height={container.height}
             fill="transparent" stroke="transparent"
@@ -60,26 +60,51 @@ function renderShadowSeats(action: ActionSeatContainer, confirmAction: () => voi
       {
         action.seats
           .map(seat => translateSeat(seat, action.position))
-          .map(renderShadowSeat)
+          .map(_ => renderShadowSeat(_, props))
       }
     </g>
   )
 }
 
-function renderShadowSeat(seat: Seat) {
-  return (
-    <rect x={seat.x}
-          y={seat.y}
-          width={seatWidth}
-          height={seatHeight}
-          fill="transparent"
-          strokeWidth={1}
-          stroke="#555"
-          {...{
-            "stroke-dasharray": "5 2"
-          }}
-    />
-  )
+function renderShadowSeat(seat: Seat, props: Props) {
+  if (getSeatFigure(seat, props) === "rectangle") {
+    return (
+      <rect x={seat.x}
+            y={seat.y}
+            width={seatWidth}
+            height={seatHeight}
+            fill="transparent"
+            strokeWidth={1}
+            stroke="#555"
+            {...{
+              "stroke-dasharray": "5 2"
+            }}
+      />
+    )
+  } else {
+    return (
+      <ellipse cx={seat.x + seatWidth / 2}
+               cy={seat.y + seatHeight / 2}
+               rx={seatWidth / 2}
+               ry={seatHeight / 2}
+               fill="transparent"
+               strokeWidth={1}
+               stroke="#555"
+               {...{
+                 "stroke-dasharray": "5 2"
+               }}
+      />
+    )
+  }
+}
+
+function getSeatFigure(seat: Seat, props: Props) {
+  const type = props.state.structure.types.find(_ => _.id === seat.type)
+  if (type !== undefined) {
+    return type.figure
+  } else {
+    return "rectangle"
+  }
 }
 
 function renderAlignmentLines(zone: Zone, seats: Array<Pos>) {

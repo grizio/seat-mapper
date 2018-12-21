@@ -5,8 +5,10 @@ import {Direction, generateSeatGrid, Order} from "utils/generators"
 import RadioField from "../form/RadioField"
 import NumberField from "../form/NumberField"
 import StringField from "../form/StringField"
+import {Type} from "../../models/Type"
 
 interface Props {
+  types: Array<Type>
   onSubmit: (state: State) => void
   onCancel: () => void
 }
@@ -22,10 +24,11 @@ interface State {
   letterDirection: Direction
   letterOrder: Order
   numberOrder: Order
+  type: number
 }
 
-export default function addGridModal(): Promise<State> {
-  return promisedModal(AddGridModal, {})
+export default function addGridModal(types: Array<Type>): Promise<State> {
+  return promisedModal(AddGridModal, {types})
 }
 
 class AddGridModal extends Component<Props, State> {
@@ -41,11 +44,12 @@ class AddGridModal extends Component<Props, State> {
       firstNumber: 1,
       letterDirection: "horizontal",
       letterOrder: "ascending",
-      numberOrder: "ascending"
+      numberOrder: "ascending",
+      type: props.types[0].id
     }
   }
 
-  render(_: Props, state: State) {
+  render(props: Props, state: State) {
     return (
       <Modal title="Add a grid of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
         <div class="row">
@@ -117,18 +121,29 @@ class AddGridModal extends Component<Props, State> {
                         ]}
                         value={state.numberOrder}
                         onChange={this.updateNumberOrder}/>
+
+            <RadioField name="add-grid-type"
+                        label="Type"
+                        options={
+                          props.types.map(type => ({
+                            label: type.name,
+                            value: type.id.toString()
+                          }))
+                        }
+                        value={state.type.toString()}
+                        onChange={this.updateType}/>
           </div>
 
           <div class="col">
-            {this.renderPreview(state)}
+            {this.renderPreview(props, state)}
           </div>
         </div>
       </Modal>
     )
   }
 
-  renderPreview(state: State) {
-    return <Preview seats={generateSeatGrid(state)}/>
+  renderPreview(props: Props, state: State) {
+    return <Preview seats={generateSeatGrid(state)} types={props.types}/>
   }
 
   updateNumberOfRows = (numberOfRows: number) => this.setState({numberOfRows})
@@ -150,6 +165,8 @@ class AddGridModal extends Component<Props, State> {
   updateLetterOrder = (letterOrder: Order) => this.setState({letterOrder})
 
   updateNumberOrder = (numberOrder: Order) => this.setState({numberOrder})
+
+  updateType = (type: string) => this.setState({type: parseInt(type, 10)})
 
   onSubmit = () => this.props.onSubmit(this.state)
 

@@ -2,13 +2,16 @@ import {Seat, seatEqual} from "./Seat"
 import {isIncluded, normalizeZone, Zone} from "./geometry"
 import {seatToZone} from "./adapters"
 import {arrayEqual} from "../utils/array"
+import {defaultType, Type, typeEqual} from "./Type"
 
 export interface Structure {
   seats: Array<Seat>
+  types: Array<Type>
 }
 
 export const defaultStructure: Structure = {
-  seats: []
+  seats: [],
+  types: [defaultType]
 }
 
 export function nextSeatId(structure: Structure): number {
@@ -68,6 +71,40 @@ export function removeSeats(structure: Structure, seatIds: Array<number>): Struc
   }
 }
 
+export function nextTypeId(structure: Structure): number {
+  return structure.types.reduce((acc, seat) => Math.max(acc, seat.id), 0) + 1
+}
+
+export function addType(structure: Structure, type: Type): Structure {
+  return {
+    ...structure,
+    types: [...structure.types, type]
+  }
+}
+
+export function patchType(structure: Structure, patch: Partial<Type> & {id: number}): Structure {
+  return {
+    ...structure,
+    types: structure.types.map(type => {
+      if (type.id === patch.id) {
+        return {...type, ...patch}
+      } else {
+        return type
+      }
+    })
+  }
+}
+
+export function removeType(structure: Structure, id: number): Structure {
+  return {
+    ...structure,
+    types: structure.types.filter(_ => _.id !== id)
+  }
+}
+
 export function hasStructureChanged(previousStructure: Structure, nextStructure: Structure): boolean {
-  return !arrayEqual(previousStructure.seats, nextStructure.seats, seatEqual)
+  return (
+    !arrayEqual(previousStructure.seats, nextStructure.seats, seatEqual) ||
+    !arrayEqual(previousStructure.types, nextStructure.types, typeEqual)
+  )
 }

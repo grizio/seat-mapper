@@ -64,6 +64,11 @@ export function promisedModal<Input, Output>(componentFactory: ComponentFactory<
 
           ".row": {
             display: "flex"
+          },
+
+          ".col": {
+            maxHeight: "510px",
+            overflow: "auto"
           }
         })),
         h(componentFactory, Object.assign({}, {onSubmit, onCancel}, input))

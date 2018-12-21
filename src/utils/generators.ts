@@ -13,9 +13,10 @@ interface GenerateSeatLineParameters {
   firstNumber: number
   changing: Changing
   order: Order
+  type: number
 }
 
-export function generateSeatLine({ direction, numberOfSeats, spacing, firstLetter, firstNumber, changing, order }: GenerateSeatLineParameters): Array<Seat> {
+export function generateSeatLine({ direction, numberOfSeats, spacing, firstLetter, firstNumber, changing, order, type }: GenerateSeatLineParameters): Array<Seat> {
   const posX = (index: number) => direction === "horizontal" ? (seatWidth + spacing) * index : 0
   const posY = (index: number) => direction === "vertical" ? (seatHeight + spacing) * index : 0
   const letter = (index: number) => {
@@ -43,6 +44,7 @@ export function generateSeatLine({ direction, numberOfSeats, spacing, firstLette
 
   return arrayFill(numberOfSeats, index => ({
     id: -1,
+    type: type,
     name: `${letter(index)}${number(index)}`,
     x: posX(index),
     y: posY(index)
@@ -87,12 +89,14 @@ interface GenerateSeatGridParameters {
   firstNumber: number
   letterDirection: Direction
   letterOrder: Order
-  numberOrder: Order
+  numberOrder: Order,
+  type: number
 }
 
 export function generateSeatGrid({
   numberOfRows, numberOfColumns, columnSpacing, rowSpacing, shift,
-  firstLetter, firstNumber, letterDirection, letterOrder, numberOrder
+  firstLetter, firstNumber, letterDirection, letterOrder, numberOrder,
+  type
 }: GenerateSeatGridParameters): Array<Seat> {
   const letter = (index: number, maxNumber: number) => {
     if (letterOrder === "ascending") {
@@ -120,6 +124,7 @@ export function generateSeatGrid({
     return arrayFill(numberOfColumns, (columnIndex) => {
       return {
         id: -1,
+        type: type,
         name: name(rowIndex, columnIndex),
         x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
         y: (seatHeight + columnSpacing) * rowIndex

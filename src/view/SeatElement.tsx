@@ -22,10 +22,11 @@ export default class SeatElement extends Component<Props, State> {
   render({seat}: Props) {
     return (
       <g id={`seat-${seat.id}`} onClick={this.onClick} onMouseDown={this.onMouseDown}>
-        <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
-              fill={this.isSelected() ? "#ccc" : "#fff"}
-              stroke="black"
-        />
+        {
+          this.getType().figure === "rectangle"
+            ? this.renderRectangle(seat)
+            : this.renderCircle(seat)
+        }
         <text x={seat.x + seatWidth / 2} y={seat.y + seatHeight / 2}
               {...{
                 "dominant-baseline": "middle",
@@ -36,8 +37,51 @@ export default class SeatElement extends Component<Props, State> {
     )
   }
 
+  renderRectangle = (seat: Seat) => {
+    const type = this.getType()
+    return (
+      <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
+            fill={this.isSelected() ? "#ccc" : "#fff"}
+            stroke={type.borderColor}
+            {...{
+              "stroke-width": type.borderWidth
+            }}
+      />
+    )
+  }
+
+  renderCircle = (seat: Seat) => {
+    const type = this.getType()
+    return (
+      <ellipse
+        cx={seat.x + seatWidth / 2} cy={seat.y + seatHeight / 2}
+        rx={seatWidth / 2} ry={seatHeight / 2}
+        fill={this.isSelected() ? "#ccc" : "#fff"}
+        stroke={type.borderColor}
+        {...{
+          "stroke-width": type.borderWidth
+        }}
+      />
+    )
+  }
+
   isSelected = () => {
     return this.props.storeState.selectedSeatIds.includes(this.props.seat.id)
+  }
+
+  getType = () => {
+    const type = this.props.storeState.structure.types.find(_ => _.id === this.props.seat.type)
+    if (type !== undefined) {
+      return type
+    } else {
+      return {
+        id: -1,
+        name: "",
+        figure: "rectangle",
+        borderColor: "#000",
+        borderWidth: 1
+      }
+    }
   }
 
   onClick = (event: MouseEvent) => {

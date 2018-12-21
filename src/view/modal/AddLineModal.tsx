@@ -5,8 +5,10 @@ import {Changing, Direction, generateSeatLine, Order} from "../../utils/generato
 import RadioField from "../form/RadioField"
 import NumberField from "../form/NumberField"
 import StringField from "../form/StringField"
+import {Type} from "../../models/Type"
 
 interface Props {
+  types: Array<Type>
   onSubmit: (state: State) => void
   onCancel: () => void
 }
@@ -19,10 +21,11 @@ interface State {
   firstNumber: number
   changing: Changing
   order: Order
+  type: number
 }
 
-export default function addLineModal(): Promise<State> {
-  return promisedModal(AddLineModal, {})
+export default function addLineModal(types: Array<Type>): Promise<State> {
+  return promisedModal(AddLineModal, {types})
 }
 
 class AddLineModal extends Component<Props, State> {
@@ -35,11 +38,12 @@ class AddLineModal extends Component<Props, State> {
       firstLetter: "A",
       firstNumber: 1,
       changing: "number",
-      order: "ascending"
+      order: "ascending",
+      type: props.types[0].id
     }
   }
 
-  render(_: Props, state: State) {
+  render(props: Props, state: State) {
     return (
       <Modal title="Add a line of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
         <div class="row">
@@ -93,18 +97,29 @@ class AddLineModal extends Component<Props, State> {
                         ]}
                         value={state.order}
                         onChange={this.updateOrder}/>
+
+            <RadioField name="add-line-type"
+                        label="Type"
+                        options={
+                          props.types.map(type => ({
+                            label: type.name,
+                            value: type.id.toString()
+                          }))
+                        }
+                        value={state.type.toString()}
+                        onChange={this.updateType}/>
           </div>
 
           <div class="col">
-            {this.renderPreview(state)}
+            {this.renderPreview(props, state)}
           </div>
         </div>
       </Modal>
     )
   }
 
-  renderPreview(state: State) {
-    return <Preview seats={generateSeatLine(state)}/>
+  renderPreview(props: Props, state: State) {
+    return <Preview seats={generateSeatLine(state)} types={props.types} />
   }
 
   updateDirection = (direction: Direction) => this.setState({direction})
@@ -120,6 +135,8 @@ class AddLineModal extends Component<Props, State> {
   updateChanging = (changing: Changing) => this.setState({changing})
 
   updateOrder = (order: Order) => this.setState({order})
+
+  updateType = (type: string) => this.setState({type: parseInt(type, 10)})
 
   onSubmit = () => this.props.onSubmit(this.state)
 

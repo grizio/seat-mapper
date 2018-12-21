@@ -24,15 +24,16 @@ import {generateSeatGrid, generateSeatLine} from "utils/generators"
 import renameSeatsModal from "../view/modal/RenameSeatsModal"
 import {Seat} from "../models/Seat"
 import {
-  addSeats,
-  nextSeatId,
+  addSeats, addType,
+  nextSeatId, nextTypeId,
   patchSeat,
-  patchSeats,
-  removeSeats,
+  patchSeats, patchType,
+  removeSeats, removeType,
   seatById,
   seatsByIds, seatsByZone,
   Structure
 } from "../models/Structure"
+import {defaultType, Type} from "../models/Type"
 
 export class Store {
   private state: State
@@ -61,6 +62,7 @@ export class Store {
     this.update({
       action: addingSeats([{
         id: -1,
+        type: this.state.structure.types[0].id,
         name: "",
         x: 0,
         y: 0
@@ -69,7 +71,7 @@ export class Store {
   }
 
   public startAddLine = () => {
-    addLineModal()
+    addLineModal(this.state.structure.types)
       .then((parameters) => {
         this.update({
           action: addingSeats(generateSeatLine(parameters))
@@ -78,7 +80,7 @@ export class Store {
   }
 
   public startAddGrid = () => {
-    addGridModal()
+    addGridModal(this.state.structure.types)
       .then((parameters) => {
         this.update({
           action: addingSeats(generateSeatGrid(parameters))
@@ -96,12 +98,14 @@ export class Store {
 
   private renameSeats = (seatIds: Array<number>) => {
     const seats = seatsByIds(this.state.structure, seatIds)
-    renameSeatsModal(seats)
-      .then(({seats: seatPatches}) => {
-        this.update({
-          structure: patchSeats(this.state.structure, seatPatches)
+    if (seats.length > 0) {
+      renameSeatsModal(seats)
+        .then(({seats: seatPatches}) => {
+          this.update({
+            structure: patchSeats(this.state.structure, seatPatches)
+          })
         })
-      })
+    }
   }
 
   public removeSeats = () => {
@@ -171,6 +175,7 @@ export class Store {
             structure: addSeats(this.state.structure,
               action.seats.map((seatInfo, index) => ({
                 id: firstNextSeatId + index,
+                type: seatInfo.type,
                 name: seatInfo.name,
                 x: seatInfo.x + action.position.x,
                 y: seatInfo.y + action.position.y
@@ -271,6 +276,27 @@ export class Store {
   public updateSeat = (seat: Seat) => {
     this.update({
       structure: patchSeat(this.state.structure, seat)
+    })
+  }
+
+  public addType = () => {
+    this.update({
+      structure: addType(this.state.structure, {
+        ...defaultType,
+        id: nextTypeId(this.state.structure)
+      })
+    })
+  }
+
+  public updateType = (type: Type) => {
+    this.update({
+      structure: patchType(this.state.structure, type)
+    })
+  }
+
+  public removeType = (id: number) => {
+    this.update({
+      structure: removeType(this.state.structure, id)
     })
   }
 }
