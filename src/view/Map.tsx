@@ -6,6 +6,7 @@ import SeatElement from "./SeatElement"
 interface Props {
   state: State
   toggleSelectSeat: (id: number) => void
+  deselectAllSeats: () => void
   startMoveSeats: () => void
   renameSeat: (id: number) => void
   confirmAction: () => void
@@ -13,8 +14,15 @@ interface Props {
 
 export function Map(props: Props) {
   const {state, confirmAction} = props
+
+  const onClick = (event: MouseEvent) => {
+    if (event.currentTarget === event.target) {
+      props.deselectAllSeats()
+    }
+  }
+
   return (
-    <svg class="map">
+    <svg class="map" onClick={onClick}>
       <g transform={`translate(${state.translation.x}, ${state.translation.y})`}>
         {
           state.seats.map(seat => (

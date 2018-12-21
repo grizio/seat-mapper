@@ -44,6 +44,7 @@ export default class MapCreator extends Component<Props, State> {
         <Map
           state={state.state}
           toggleSelectSeat={this.store.toggleSelectSeat}
+          deselectAllSeats={this.store.deselectAllSeats}
           startMoveSeats={this.store.startMoveSeats}
           renameSeat={this.store.renameSeat}
           confirmAction={this.store.confirmAction}

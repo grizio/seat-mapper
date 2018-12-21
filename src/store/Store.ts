@@ -123,6 +123,10 @@ export class Store {
     }
   }
 
+  public deselectAllSeats = () => {
+    this.update({ selectedSeatIds: [] })
+  }
+
   public startMoveSeats = () => {
     const zone = containingZone(this.getSelectedSeats().map(seatToZone))
     this.update({
