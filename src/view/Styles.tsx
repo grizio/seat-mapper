@@ -19,15 +19,32 @@ export function Styles() {
         justifyContent: "center"
       },
 
-      ".map-container": {
+      ".row": {
         flexGrow: 1,
         display: "flex",
+        alignItems: "stretch"
+      },
+
+      ".map-container": {
+        display: "flex",
         alignItems: "stretch",
-        position: "relative"
+        position: "relative",
+        height: "100%"
       },
 
       ".map": {
         flexGrow: 1
+      },
+
+      ".right-panel": {
+        flex: "250px 0 0",
+        margin: "1rem",
+        padding: "1rem",
+        boxShadow: "0 0 2px #aaa"
+      },
+
+      ".right-panel section:not(:first-of-type)": {
+        borderTop: "1px dotted #ccc"
       }
     })
   }</style>

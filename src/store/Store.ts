@@ -279,4 +279,16 @@ export class Store {
       })
     }
   }
+
+  public updateSeat = (seat: Seat) => {
+    this.update({
+      seats: this.state.seats.map(currentSeat => {
+        if (currentSeat.id === seat.id) {
+          return seat
+        } else {
+          return currentSeat
+        }
+      })
+    })
+  }
 }

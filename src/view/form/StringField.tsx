@@ -24,7 +24,7 @@ export default class StringField extends Component<Props, State> {
         </p>
 
         <p>
-          <input type="text" name={props.name} id={props.label}
+          <input type="text" name={props.name} id={props.name}
                  value={props.value}
                  onInput={this.onInput}/>
         </p>

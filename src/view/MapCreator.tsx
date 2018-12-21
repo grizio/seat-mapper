@@ -7,6 +7,7 @@ import { Styles } from './Styles'
 import { Toolbar } from './Toolbar'
 import {arrayEqual} from "../utils/array"
 import {Seat, seatEqual} from "../models/Seat"
+import RightPanel from "./RightPanel"
 
 interface Props {
   initialSeats: Array<Seat>
@@ -57,16 +58,19 @@ export default class MapCreator extends Component<Props, State> {
         removeSeat={this.store.removeSeats}
         cancelAction={this.store.cancelAction}
       />
-      <div class="map-container" onMouseMove={this.mousemove} onMouseDown={this.mousedown} onMouseUp={this.mouseup}>
-        <Map
-          state={state.state}
-          toggleSelectSeat={this.store.toggleSelectSeat}
-          deselectAllSeats={this.store.deselectAllSeats}
-          startZoneSelection={this.store.startZoneSelection}
-          startMoveSeats={this.store.startMoveSeats}
-          renameSeat={this.store.renameSeat}
-          confirmAction={this.store.confirmAction}
-        />
+      <div class="row">
+        <div class="map-container" onMouseMove={this.mousemove} onMouseDown={this.mousedown} onMouseUp={this.mouseup}>
+          <Map
+            state={state.state}
+            toggleSelectSeat={this.store.toggleSelectSeat}
+            deselectAllSeats={this.store.deselectAllSeats}
+            startZoneSelection={this.store.startZoneSelection}
+            startMoveSeats={this.store.startMoveSeats}
+            renameSeat={this.store.renameSeat}
+            confirmAction={this.store.confirmAction}
+          />
+        </div>
+        <RightPanel state={state.state} updateSeat={this.store.updateSeat}/>
       </div>
     </div>
   }

@@ -26,7 +26,7 @@ export default class NumberField extends Component<Props, State> {
         </p>
 
         <p>
-          <input type="number" name={props.name} id={props.label} min={props.min} max={props.max}
+          <input type="number" name={props.name} id={props.name} min={props.min} max={props.max}
                  value={props.value.toString()}
                  onInput={this.onInput}/>
         </p>
