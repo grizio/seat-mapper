@@ -279,6 +279,16 @@ export class Store {
     })
   }
 
+  public updateSelectedSeats = (patch: Partial<Seat>) => {
+    this.update({
+      structure: patchSeats(
+        this.state.structure,
+        seatsByIds(this.state.structure, this.state.selectedSeatIds)
+          .map(_ => ({...patch, id: _.id}))
+      )
+    })
+  }
+
   public addType = () => {
     this.update({
       structure: addType(this.state.structure, {

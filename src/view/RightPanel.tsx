@@ -10,6 +10,7 @@ import ColorField from "./form/ColorField"
 interface Props {
   state: State
   updateSeat: (seat: Seat) => void
+  updateSelectedSeats: (patch: Partial<Seat>) => void
   addType: () => void
   updateType: (type: Type) => void
   removeType: (id: number) => void
@@ -29,9 +30,29 @@ export default class RightPanel extends Component<Props, {}> {
       </div>
     } else {
       return <div class="right-panel">
+        {this.renderBatchSeatView(seats, props)}
         {seats.map(_ => this.renderSeatView(_, props))}
       </div>
     }
+  }
+
+  renderBatchSeatView = (seats: Array<Seat>, props: Props) => {
+    return (
+      <section>
+        <h4>Update all selected seats</h4>
+
+        <RadioField name={`right-panel-seat-all-seats-type`}
+                    label="Type"
+                    options={
+                      props.state.structure.types.map(type => ({
+                        label: type.name,
+                        value: type.id.toString()
+                      }))
+                    }
+                    value={seats[0].type.toString()}
+                    onChange={type => props.updateSelectedSeats({type: parseInt(type, 10)})}/>
+      </section>
+    )
   }
 
   renderSeatView = (seat: Seat, props: Props) => {

@@ -70,6 +70,7 @@ export default class MapCreator extends Component<Props, State> {
         <RightPanel
           state={state.state}
           updateSeat={this.store.updateSeat}
+          updateSelectedSeats={this.store.updateSelectedSeats}
           addType={this.store.addType}
           updateType={this.store.updateType}
           removeType={this.store.removeType}
