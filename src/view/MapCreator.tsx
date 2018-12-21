@@ -86,8 +86,8 @@ export default class MapCreator extends Component<Props, State> {
   mousedown = (event: MouseEvent) => {
     if (event.shiftKey) {
       this.store.startGraping({
-        x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft,
-        y: event.clientY - (event.currentTarget as HTMLElement).offsetTop
+        x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft + document.body.scrollLeft,
+        y: event.clientY - (event.currentTarget as HTMLElement).offsetTop + document.body.scrollTop
       })
     }
   }
