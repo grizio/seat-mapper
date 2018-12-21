@@ -61,8 +61,8 @@ export function translateZone(zone: Zone, translationFromZero: Pos): Zone {
 export function translateSeat(seat: Seat, translationFromZero: Pos): Seat {
   return {
     ...seat,
-    x: seat.x + translationFromZero.x,
-    y: seat.y + translationFromZero.y,
+    x: Math.round(seat.x + translationFromZero.x),
+    y: Math.round(seat.y + translationFromZero.y)
   }
 }
 

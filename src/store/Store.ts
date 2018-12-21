@@ -169,8 +169,8 @@ export class Store {
                 id: firstNextSeatId + index,
                 type: seatInfo.type,
                 name: seatInfo.name,
-                x: seatInfo.x + action.position.x,
-                y: seatInfo.y + action.position.y
+                x: Math.round(seatInfo.x + action.position.x),
+                y: Math.round(seatInfo.y + action.position.y)
               }))
             ),
             action: undefined
