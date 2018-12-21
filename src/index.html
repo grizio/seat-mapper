@@ -43,11 +43,11 @@
     Array.from(document.querySelectorAll("theater-mapper")).forEach(theaterMapper => {
       const storedTheaterMapperTest = sessionStorage.getItem("theater-mapper-test")
       if (storedTheaterMapperTest !== null) {
-        theaterMapper.setAttribute("initial-seats", storedTheaterMapperTest)
+        theaterMapper.setAttribute("initial-structure", storedTheaterMapperTest)
       }
 
       theaterMapper.addEventListener("change", (event) => {
-        sessionStorage.setItem("theater-mapper-test", JSON.stringify(event.seats))
+        sessionStorage.setItem("theater-mapper-test", JSON.stringify(event.structure))
       })
     })
   })

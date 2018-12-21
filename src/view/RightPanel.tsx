@@ -15,7 +15,7 @@ export default class RightPanel extends Component<Props, {}> {
   }
 
   render(props: Props) {
-    const seats = props.state.seats.filter(seat => props.state.selectedSeatIds.includes(seat.id))
+    const seats = props.state.structure.seats.filter(seat => props.state.selectedSeatIds.includes(seat.id))
     if (seats.length === 0) {
       return <div class="right-panel">
         {this.renderEmptyView()}

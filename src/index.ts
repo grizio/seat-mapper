@@ -1,13 +1,13 @@
 import {h, render} from 'preact'
 import MapCreator from 'view/MapCreator'
-import {Seat} from "./models/Seat"
+import {defaultStructure, Structure} from "./models/Structure"
 
 export class TheaterMapperChangeEvent extends Event {
-  public readonly seats: ReadonlyArray<Readonly<Seat>>
+  public readonly structure: Readonly<Structure>
 
-  constructor(seats: Array<Seat>) {
+  constructor(structure: Structure) {
     super("change")
-    this.seats = Object.freeze([...seats.map(seat => ({...seat}))])
+    this.structure = Object.freeze({...structure})
   }
 }
 
@@ -21,7 +21,7 @@ customElements.define("theater-mapper", class extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["initial-seats"]
+    return ["initial-structure"]
   }
 
   connectedCallback() {
@@ -39,12 +39,12 @@ customElements.define("theater-mapper", class extends HTMLElement {
   }
 
   getProps() {
-    const initialSeatsAttribute = this.getAttribute("initial-seats")
-    const initialSeats = initialSeatsAttribute !== null ? JSON.parse(initialSeatsAttribute) : undefined
+    const initialStructureAttribute = this.getAttribute("initial-structure")
+    const initialStructure = initialStructureAttribute !== null ? JSON.parse(initialStructureAttribute) : undefined
     return {
-      initialSeats: initialSeats,
-      onChange: (seats: Array<Seat>) => {
-        this.dispatchEvent(new TheaterMapperChangeEvent(seats || []))
+      initialStructure: initialStructure,
+      onChange: (structure: Structure) => {
+        this.dispatchEvent(new TheaterMapperChangeEvent(structure || defaultStructure))
       }
     }
   }

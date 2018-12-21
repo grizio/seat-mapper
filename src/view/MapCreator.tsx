@@ -5,13 +5,12 @@ import { Store } from 'store/Store'
 import { Map } from './Map'
 import { Styles } from './Styles'
 import { Toolbar } from './Toolbar'
-import {arrayEqual} from "../utils/array"
-import {Seat, seatEqual} from "../models/Seat"
 import RightPanel from "./RightPanel"
+import {defaultStructure, hasStructureChanged, Structure} from "../models/Structure"
 
 interface Props {
-  initialSeats: Array<Seat>
-  onChange: (seats: Array<Seat>) => void
+  initialStructure?: Structure
+  onChange: (structure: Structure) => void
 }
 
 interface State {
@@ -25,7 +24,7 @@ export default class MapCreator extends Component<Props, State> {
     super(props)
     this.store = new Store(
       {
-        seats: props.initialSeats || [],
+        structure: props.initialStructure || defaultStructure,
         selectedSeatIds: [],
         translation: defaultPosition,
         mousePosition: defaultPosition
@@ -35,14 +34,12 @@ export default class MapCreator extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    this.store.reload(nextProps.initialSeats || [])
+    this.store.reload(nextProps.initialStructure || defaultStructure)
   }
 
   onStoreUpdate = (state: StoreState) => {
-    const previousSeats = this.state.state !== undefined ? this.state.state.seats : []
-    const nextSeats = state.seats
-    if (!arrayEqual(previousSeats, nextSeats, seatEqual)) {
-      this.props.onChange(nextSeats)
+    if (this.state.state === undefined || hasStructureChanged(state.structure, this.state.state.structure)) {
+      this.props.onChange(state.structure)
     }
     this.setState({state})
   }

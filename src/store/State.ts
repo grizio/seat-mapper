@@ -1,8 +1,9 @@
 import {Seat, seatHeight, seatWidth} from "models/Seat"
 import {containingZone, defaultPosition, Pos, Zone} from "models/geometry"
+import {Structure} from "../models/Structure"
 
 export interface State {
-  seats: Array<Seat>
+  structure: Structure
   selectedSeatIds: Array<number>
   translation: Pos
   mousePosition: Pos

@@ -25,7 +25,7 @@ export function Map(props: Props) {
     >
       <g transform={`translate(${state.translation.x}, ${state.translation.y})`}>
         {
-          state.seats.map(seat => (
+          state.structure.seats.map(seat => (
             <SeatElement
               storeState={props.state}
               seat={seat}

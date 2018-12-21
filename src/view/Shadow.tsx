@@ -34,7 +34,7 @@ export function Shadow({state, confirmAction}: Props) {
         }
         {
           isAddingSeats(action) || isMovingSeats(action)
-            ? renderAlignmentLines(translateZone(zoneOfActionSeatContainer(action), action.position), state.seats)
+            ? renderAlignmentLines(translateZone(zoneOfActionSeatContainer(action), action.position), state.structure.seats)
             : undefined
         }
         {

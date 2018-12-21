@@ -14,7 +14,7 @@ import {
   differencePosition,
   negativePosition,
   translateSeat,
-  containingZone, zoneTopLeftPosition, translateZone, isIncluded, normalizeZone
+  containingZone, zoneTopLeftPosition, translateZone
 } from "models/geometry"
 import { seatToZone, zoneToRect } from 'models/adapters'
 import addLineModal from "view/modal/AddLineModal"
@@ -23,6 +23,16 @@ import { magnet } from 'utils/view'
 import {generateSeatGrid, generateSeatLine} from "utils/generators"
 import renameSeatsModal from "../view/modal/RenameSeatsModal"
 import {Seat} from "../models/Seat"
+import {
+  addSeats,
+  nextSeatId,
+  patchSeat,
+  patchSeats,
+  removeSeats,
+  seatById,
+  seatsByIds, seatsByZone,
+  Structure
+} from "../models/Structure"
 
 export class Store {
   private state: State
@@ -39,9 +49,9 @@ export class Store {
     this.listener(this.state)
   }
 
-  public reload = (seats: Array<Seat>) => {
+  public reload = (structure: Structure) => {
     this.update({
-      seats: seats,
+      structure,
       selectedSeatIds: [],
       action: undefined
     })
@@ -56,11 +66,6 @@ export class Store {
         y: 0
       }])
     })
-  }
-
-  private nextSeatId = () => {
-    const idMax = this.state.seats.reduce((acc, seat) => Math.max(acc, seat.id), 0)
-    return idMax + 1
   }
 
   public startAddLine = () => {
@@ -90,25 +95,18 @@ export class Store {
   }
 
   private renameSeats = (seatIds: Array<number>) => {
-    const seats = this.state.seats.filter(_ => seatIds.includes(_.id))
+    const seats = seatsByIds(this.state.structure, seatIds)
     renameSeatsModal(seats)
       .then(({seats: seatPatches}) => {
         this.update({
-          seats: this.state.seats.map(seat => {
-            const seatPatch = seatPatches.find(_ => _.id === seat.id)
-            if (seatPatch) {
-              return {...seat, name: seatPatch.name}
-            } else {
-              return seat
-            }
-          })
+          structure: patchSeats(this.state.structure, seatPatches)
         })
       })
   }
 
   public removeSeats = () => {
     this.update({
-      seats: this.state.seats.filter(seat => this.state.selectedSeatIds.every(_ => _ !== seat.id)),
+      structure: removeSeats(this.state.structure, this.state.selectedSeatIds),
       selectedSeatIds: []
     })
   }
@@ -120,7 +118,7 @@ export class Store {
         action: undefined
       })
     } else {
-      const seatToSelect = this.state.seats.find(_ => _.id === id)
+      const seatToSelect = seatById(this.state.structure, id)
       if (seatToSelect !== undefined) {
         this.update({
           selectedSeatIds: [
@@ -159,7 +157,7 @@ export class Store {
   }
 
   private getSelectedSeats = () => {
-    return this.state.seats.filter(_ => this.state.selectedSeatIds.includes(_.id))
+    return seatsByIds(this.state.structure, this.state.selectedSeatIds)
   }
 
   public confirmAction = () => {
@@ -168,39 +166,29 @@ export class Store {
     if (action) {
       switch (action.type) {
         case "addingSeats":
-          const nextSeatId = this.nextSeatId()
+          const firstNextSeatId = nextSeatId(this.state.structure)
           this.update({
-            seats: [
-              ...state.seats,
-              ...action.seats.map((seatInfo, index) => ({
-                id: nextSeatId + index,
+            structure: addSeats(this.state.structure,
+              action.seats.map((seatInfo, index) => ({
+                id: firstNextSeatId + index,
                 name: seatInfo.name,
                 x: seatInfo.x + action.position.x,
                 y: seatInfo.y + action.position.y
               }))
-            ],
+            ),
             action: undefined
           })
           break
 
         case "movingSeats":
           this.update({
-            seats: state.seats.map(seat => {
-              const movingSeat = action.seats.find(_ => _.id === seat.id)
-              if (movingSeat !== undefined) {
-                return translateSeat(movingSeat, action.position)
-              } else {
-                return seat
-              }
-            }),
+            structure: patchSeats(this.state.structure, action.seats.map(movingSeat => translateSeat(movingSeat, action.position))),
             action: undefined
           })
           break
 
         case "zoneSelection":
-          const seatIdsInSelection = this.state.seats
-            .filter(seat => isIncluded(seatToZone(seat), normalizeZone(action.zone)))
-            .map(_ => _.id)
+          const seatIdsInSelection = seatsByZone(this.state.structure, action.zone).map(_ => _.id)
           this.update({
             selectedSeatIds: action.additionalSeats ? [...this.state.selectedSeatIds, ...seatIdsInSelection] : seatIdsInSelection,
             action: undefined
@@ -282,13 +270,7 @@ export class Store {
 
   public updateSeat = (seat: Seat) => {
     this.update({
-      seats: this.state.seats.map(currentSeat => {
-        if (currentSeat.id === seat.id) {
-          return seat
-        } else {
-          return currentSeat
-        }
-      })
+      structure: patchSeat(this.state.structure, seat)
     })
   }
 }
