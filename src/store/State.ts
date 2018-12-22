@@ -1,6 +1,6 @@
 import {Seat} from "models/Seat"
 import {containingZone, defaultPosition, Pos, Zone} from "models/geometry"
-import {Structure} from "../models/Structure"
+import {Structure} from "models/Structure"
 
 export interface State {
   structure: Structure

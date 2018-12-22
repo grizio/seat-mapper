@@ -16,13 +16,13 @@ import {
   translateSeat,
   containingZone, zoneTopLeftPosition, translateZone
 } from "models/geometry"
-import { seatToZone, zoneToRect } from 'models/adapters'
+import { seatToZone, zoneToRect } from "models/adapters"
 import addLineModal from "view/modal/AddLineModal"
 import addGridModal from "view/modal/AddGridModal"
-import { magnet } from 'utils/view'
+import { magnet } from "utils/view"
 import {generateSeatGrid, generateSeatLine} from "utils/generators"
-import renameSeatsModal from "../view/modal/RenameSeatsModal"
-import {defaultSeatHeight, defaultSeatWidth, Seat} from "../models/Seat"
+import renameSeatsModal from "view/modal/RenameSeatsModal"
+import {defaultSeatHeight, defaultSeatWidth, Seat} from "models/Seat"
 import {
   addSeats, addType,
   nextSeatId, nextTypeId,
@@ -31,8 +31,8 @@ import {
   removeSeats, removeType,
   seatsByIds, seatsByZone,
   Structure
-} from "../models/Structure"
-import {defaultSeatType, Type} from "../models/Type"
+} from "models/Structure"
+import {defaultSeatType, Type} from "models/Type"
 
 export class Store {
   private state: State

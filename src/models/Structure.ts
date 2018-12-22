@@ -1,7 +1,7 @@
 import {Seat, seatEqual} from "./Seat"
 import {isIncluded, normalizeZone, Zone} from "./geometry"
 import {seatToZone} from "./adapters"
-import {arrayEqual} from "../utils/array"
+import {arrayEqual} from "utils/array"
 import {defaultSeatType, defaultStageType, Type, typeEqual} from "./Type"
 
 export interface Structure {

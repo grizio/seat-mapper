@@ -1,9 +1,9 @@
-import {h, render} from 'preact'
-import MapCreator from 'view/MapCreator'
+import {h, render} from "preact"
+import SeatMapper from "view/SeatMapper"
 import {defaultStructure, Structure} from "./models/Structure"
 import {exportStructure, importStructure, Version, VersionedStructure} from "./api/api"
 
-export class TheaterMapperChangeEvent extends Event {
+export class SeatMapperChangeEvent extends Event {
   public readonly structure: Readonly<VersionedStructure>
 
   constructor(structure: VersionedStructure) {
@@ -12,13 +12,13 @@ export class TheaterMapperChangeEvent extends Event {
   }
 }
 
-customElements.define("theater-mapper", class extends HTMLElement {
+customElements.define("seat-mapper", class extends HTMLElement {
   private readonly shadow: ShadowRoot
   private currentElement: Element | undefined
 
   constructor() {
     super()
-    this.shadow = this.attachShadow({mode: 'open'})
+    this.shadow = this.attachShadow({mode: "open"})
   }
 
   static get observedAttributes() {
@@ -35,7 +35,7 @@ customElements.define("theater-mapper", class extends HTMLElement {
 
   render() {
     if (this.isConnected) {
-      this.currentElement = render(h(MapCreator, this.getProps()), this.shadow, this.currentElement)
+      this.currentElement = render(h(SeatMapper, this.getProps()), this.shadow, this.currentElement)
     }
   }
 
@@ -47,7 +47,7 @@ customElements.define("theater-mapper", class extends HTMLElement {
       initialStructure: initialStructure,
       onChange: (structure: Structure) => {
         const version = this.getAttribute("version") as Version || undefined
-        this.dispatchEvent(new TheaterMapperChangeEvent(exportStructure(structure || defaultStructure, version)))
+        this.dispatchEvent(new SeatMapperChangeEvent(exportStructure(structure || defaultStructure, version)))
       }
     }
   }

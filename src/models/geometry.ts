@@ -1,4 +1,4 @@
-import { Seat } from 'models/Seat'
+import { Seat } from "models/Seat"
 
 export interface Line {
   x1: number

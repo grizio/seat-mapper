@@ -1,5 +1,5 @@
 import {export_0_1_0, import_0_1_0, Structure_0_1_0} from "./0_1_0"
-import {Structure} from "../models/Structure"
+import {Structure} from "models/Structure"
 
 export * from "./0_1_0"
 

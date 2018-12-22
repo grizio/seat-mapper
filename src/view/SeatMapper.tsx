@@ -17,7 +17,7 @@ interface State {
   state: StoreState
 }
 
-export default class MapCreator extends Component<Props, State> {
+export default class SeatMapper extends Component<Props, State> {
   private readonly store: Store
 
   constructor(props: Props) {

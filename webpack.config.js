@@ -1,6 +1,6 @@
 const path = require("path")
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: "./src/index.ts",
@@ -33,14 +33,11 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"]
   },
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist")
-  },
-  devServer: {
-    contentBase: path.join(__dirname, "dist")
+    filename: "index.js",
+    path: path.resolve(__dirname)
   },
   optimization: {
-    minimizer: [new UglifyJsPlugin()]
+    minimizer: [new TerserPlugin()]
   },
   plugins: [
     new HtmlWebPackPlugin({

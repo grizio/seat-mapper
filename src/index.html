@@ -5,7 +5,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Theater mapper</title>
+  <title>Seat mapper</title>
 
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css"
         integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
@@ -32,22 +32,22 @@
   </style>
 </head>
 <body>
-<h1>Theater mapper</h1>
+<h1>Seat mapper</h1>
 
 <div id="mapper">
-  <theater-mapper></theater-mapper>
+  <seat-mapper></seat-mapper>
 </div>
 
 <script>
   window.addEventListener("load", () => {
-    Array.from(document.querySelectorAll("theater-mapper")).forEach(theaterMapper => {
-      const storedTheaterMapperTest = sessionStorage.getItem("theater-mapper-test")
+    Array.from(document.querySelectorAll("seat-mapper")).forEach(seatMapper => {
+      const storedTheaterMapperTest = sessionStorage.getItem("seat-mapper-test")
       if (storedTheaterMapperTest !== null) {
-        theaterMapper.setAttribute("initial-structure", storedTheaterMapperTest)
+        seatMapper.setAttribute("initial-structure", storedTheaterMapperTest)
       }
 
-      theaterMapper.addEventListener("change", (event) => {
-        sessionStorage.setItem("theater-mapper-test", JSON.stringify(event.structure))
+      seatMapper.addEventListener("change", (event) => {
+        sessionStorage.setItem("seat-mapper-test", JSON.stringify(event.structure))
       })
     })
   })

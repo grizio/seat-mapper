@@ -1,4 +1,4 @@
-import {Seat} from "../models/Seat"
+import {Seat} from "models/Seat"
 import {arrayFill} from "./array"
 
 export type Direction = "horizontal" | "vertical"
@@ -55,7 +55,7 @@ export function generateSeatLine({ direction, numberOfSeats, spacing, firstLette
   }))
 }
 
-const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split("")
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
 
 function stringToNumber(input: string): number {
   if (input === "") {
