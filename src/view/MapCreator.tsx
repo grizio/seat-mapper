@@ -5,7 +5,7 @@ import { Store } from 'store/Store'
 import { Map } from './Map'
 import { Styles } from './Styles'
 import { Toolbar } from './Toolbar'
-import RightPanel from "./RightPanel"
+import RightPanel from "./rightPanel/RightPanel"
 import {defaultStructure, hasStructureChanged, Structure} from "../models/Structure"
 
 interface Props {
