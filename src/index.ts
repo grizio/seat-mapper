@@ -1,11 +1,12 @@
 import {h, render} from 'preact'
 import MapCreator from 'view/MapCreator'
 import {defaultStructure, Structure} from "./models/Structure"
+import {exportStructure, importStructure, Version, VersionedStructure} from "./api/api"
 
 export class TheaterMapperChangeEvent extends Event {
-  public readonly structure: Readonly<Structure>
+  public readonly structure: Readonly<VersionedStructure>
 
-  constructor(structure: Structure) {
+  constructor(structure: VersionedStructure) {
     super("change")
     this.structure = Object.freeze({...structure})
   }
@@ -40,11 +41,13 @@ customElements.define("theater-mapper", class extends HTMLElement {
 
   getProps() {
     const initialStructureAttribute = this.getAttribute("initial-structure")
-    const initialStructure = initialStructureAttribute !== null ? JSON.parse(initialStructureAttribute) : undefined
+    const initialVersionedStructure = initialStructureAttribute !== null ? JSON.parse(initialStructureAttribute) : undefined
+    const initialStructure = initialVersionedStructure !== undefined ? importStructure(initialVersionedStructure) : undefined
     return {
       initialStructure: initialStructure,
       onChange: (structure: Structure) => {
-        this.dispatchEvent(new TheaterMapperChangeEvent(structure || defaultStructure))
+        const version = this.getAttribute("version") as Version || undefined
+        this.dispatchEvent(new TheaterMapperChangeEvent(exportStructure(structure || defaultStructure, version)))
       }
     }
   }
