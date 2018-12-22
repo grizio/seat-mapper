@@ -1,0 +1,8 @@
+export { default as AddLineIcon } from "./AddLineIcon"
+export { default as AddIcon } from "./AddIcon"
+export { default as AddGridIcon } from "./AddGridIcon"
+export { default as AddSeatIcon } from "./AddSeatIcon"
+export { default as CheckIcon } from "./CheckIcon"
+export { default as CrossIcon } from "./CrossIcon"
+export { default as EditIcon } from "./EditIcon"
+export { default as TrashIcon } from "./TrashIcon"

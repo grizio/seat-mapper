@@ -1,4 +1,6 @@
 import {h} from "preact"
+import IconButton from "./buttons/IconButton"
+import {AddGridIcon, AddLineIcon, AddSeatIcon, CrossIcon, EditIcon, TrashIcon} from "../icons"
 
 interface Props {
   add: () => void
@@ -11,11 +13,11 @@ interface Props {
 
 export function Toolbar({add, startAddLine, startAddGrid, renameSelectedSeat, removeSeat, cancelAction}: Props) {
   return <div class="toolbar">
-    <button onClick={add}>+</button>
-    <button onClick={startAddLine}>+++</button>
-    <button onClick={startAddGrid}>###</button>
-    <button onClick={renameSelectedSeat}>Rename</button>
-    <button onClick={removeSeat}>🗑️</button>
-    <button onClick={cancelAction}>X</button>
+    <IconButton label="Add a seat" onClick={add}><AddSeatIcon /></IconButton>
+    <IconButton label="Add a line of seats" onClick={startAddLine}><AddLineIcon /></IconButton>
+    <IconButton label="Add a grid of seats" onClick={startAddGrid}><AddGridIcon /></IconButton>
+    <IconButton label="Rename" onClick={renameSelectedSeat}><EditIcon /></IconButton>
+    <IconButton label="Remove seat" onClick={removeSeat}><TrashIcon /></IconButton>
+    <IconButton label="Cancel current action" onClick={cancelAction}><CrossIcon /></IconButton>
   </div>
 }

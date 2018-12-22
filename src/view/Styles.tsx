@@ -46,14 +46,46 @@ export function Styles() {
       },
 
       ".right-panel": {
-        flex: "250px 0 0",
+        flex: "350px 0 0",
         margin: "1rem",
-        padding: "1rem",
-        boxShadow: "0 0 2px #aaa"
+        boxShadow: "0 0 2px #aaa",
+        maxHeight: "calc(100vh - 40px - 2rem)",
+        overflow: "auto"
       },
 
-      ".right-panel section:not(:first-of-type)": {
-        borderTop: "1px dotted #ccc"
+      ".right-panel section, .right-panel h3": {
+        margin: "1rem 0",
+        padding: "0 0.5rem"
+      },
+
+      ".right-panel details": {
+        padding: "0 1rem",
+        border: "1px solid #ccc"
+      },
+
+      ".right-panel details:not(:first-of-type)": {
+        borderTop: "none"
+      },
+
+      ".right-panel details summary": {
+        padding: "0.25rem",
+        cursor: "pointer",
+        outline: "none"
+      },
+
+      ".icon-button": {
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        border: "none",
+        backgroundColor: "#fff",
+        cursor: "pointer",
+        padding: "0.5rem",
+        transition: "all 0.25s ease-in-out"
+      },
+
+      ".icon-button:hover": {
+        backgroundColor: "#ddd"
       }
     })
   }</style>

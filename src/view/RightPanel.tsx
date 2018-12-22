@@ -6,6 +6,8 @@ import NumberField from "./form/NumberField"
 import {Type} from "../models/Type"
 import RadioField from "./form/RadioField"
 import ColorField from "./form/ColorField"
+import IconButton from "./buttons/IconButton"
+import {AddIcon, TrashIcon} from "../icons"
 
 interface Props {
   state: State
@@ -25,11 +27,17 @@ export default class RightPanel extends Component<Props, {}> {
     const seats = props.state.structure.seats.filter(seat => props.state.selectedSeatIds.includes(seat.id))
     if (seats.length === 0) {
       return <div class="right-panel">
+        <h3>Types of seats</h3>
         {props.state.structure.types.map(_ => this.renderTypeView(_, props))}
-        <button onClick={props.addType}>Add</button>
+        <section>
+          <IconButton label="New type" onClick={props.addType}>
+            <AddIcon />
+          </IconButton>
+        </section>
       </div>
     } else {
       return <div class="right-panel">
+        <h3>Selected seats</h3>
         {this.renderBatchSeatView(seats, props)}
         {seats.map(_ => this.renderSeatView(_, props))}
       </div>
@@ -39,10 +47,8 @@ export default class RightPanel extends Component<Props, {}> {
   renderBatchSeatView = (seats: Array<Seat>, props: Props) => {
     return (
       <section>
-        <h4>Update all selected seats</h4>
-
         <RadioField name={`right-panel-seat-all-seats-type`}
-                    label="Type"
+                    label="Type of selected seats"
                     options={
                       props.state.structure.types.map(type => ({
                         label: type.name,
@@ -57,23 +63,13 @@ export default class RightPanel extends Component<Props, {}> {
 
   renderSeatView = (seat: Seat, props: Props) => {
     return (
-      <section>
-        <h4>{seat.name}</h4>
+      <details key={`seat-${seat.id.toString()}`}>
+        <summary>{seat.name}</summary>
 
         <StringField name={`right-panel-seat-${seat.id}-name`}
                      label="Seat name"
                      value={seat.name}
                      onChange={name => props.updateSeat({...seat, name})}/>
-
-        <NumberField name={`right-panel-seat-${seat.id}-pos-x`}
-                     label="X position"
-                     value={seat.x}
-                     onChange={x => props.updateSeat({...seat, x})}/>
-
-        <NumberField name={`right-panel-seat-${seat.id}-pos-y`}
-                     label="Y position"
-                     value={seat.y}
-                     onChange={y => props.updateSeat({...seat, y})}/>
 
         <RadioField name={`right-panel-seat-${seat.id}-type`}
                     label="Type"
@@ -85,14 +81,34 @@ export default class RightPanel extends Component<Props, {}> {
                     }
                     value={seat.type.toString()}
                     onChange={type => props.updateSeat({...seat, type: parseInt(type, 10)})}/>
-      </section>
+
+        <NumberField name={`right-panel-seat-${seat.id}-pos-x`}
+                     label="X position"
+                     value={seat.x}
+                     onChange={x => props.updateSeat({...seat, x})}/>
+
+        <NumberField name={`right-panel-seat-${seat.id}-pos-y`}
+                     label="Y position"
+                     value={seat.y}
+                     onChange={y => props.updateSeat({...seat, y})}/>
+      </details>
     )
   }
 
   renderTypeView = (type: Type, props: Props) => {
     return (
-      <section>
-        <h4>{type.name}</h4>
+      <details key={`type-${type.id.toString()}`}>
+        <summary>
+          {props.state.structure.types.length > 1
+            ? (
+              <IconButton label="Remove" onClick={() => props.removeType(type.id)}>
+                <TrashIcon size="small"/>
+              </IconButton>
+            )
+            : undefined}
+
+          {type.name}
+        </summary>
 
         <StringField name={`right-panel-type-${type.id}-name`}
                      label="Type name"
@@ -118,8 +134,8 @@ export default class RightPanel extends Component<Props, {}> {
                     value={type.borderWidth}
                     onChange={borderWidth => props.updateType({...type, borderWidth})}/>
 
-        { props.state.structure.types.length > 1 ? <button onClick={() => props.removeType(type.id)}>Remove</button> : undefined }
-      </section>
+
+      </details>
     )
   }
 }
