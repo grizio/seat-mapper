@@ -1,7 +1,7 @@
 import * as CSS from "csstype"
 import { Pos, Zone } from 'models/geometry'
 
-interface Declaration {
+export interface Declaration {
   [_: string]: CSS.Properties
 }
 

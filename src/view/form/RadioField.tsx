@@ -25,16 +25,18 @@ export default class RadioField<A extends string> extends Component<Props<A>, St
       <div class="field">
         <p class="field-label">{props.label}</p>
 
-        {
-          props.options.map(option => (
-            <label>
-              <input type="radio" name={props.name} value={option.value}
-                     checked={props.value === option.value}
-                     onChange={this.onChange}/>
-              {option.label}
-            </label>
-          ))
-        }
+        <p class="field-input radio">
+          {
+            props.options.map(option => (
+              <label>
+                <input type="radio" name={props.name} value={option.value}
+                       checked={props.value === option.value}
+                       onChange={this.onChange}/>
+                {option.label}
+              </label>
+            ))
+          }
+        </p>
       </div>
     )
   }

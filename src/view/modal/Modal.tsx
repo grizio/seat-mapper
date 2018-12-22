@@ -1,5 +1,6 @@
 import {Component, ComponentChildren, ComponentFactory, h, render} from "preact"
 import {renderStyles} from "../../utils/view"
+import {formStyles} from "../form/formStyles"
 
 interface ComponentFactoryLifecycle<Output> {
   onSubmit: (output: Output) => void
@@ -69,7 +70,9 @@ export function promisedModal<Input, Output>(componentFactory: ComponentFactory<
           ".col": {
             maxHeight: "510px",
             overflow: "auto"
-          }
+          },
+
+          ...formStyles
         })),
         h(componentFactory, Object.assign({}, {onSubmit, onCancel}, input))
       )

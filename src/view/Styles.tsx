@@ -1,5 +1,6 @@
 import {h} from "preact"
 import {renderStyles} from "../utils/view"
+import {formStyles} from "./form/formStyles"
 
 export function Styles() {
   return <style>{
@@ -86,7 +87,9 @@ export function Styles() {
 
       ".icon-button:hover": {
         backgroundColor: "#ddd"
-      }
+      },
+
+      ...formStyles
     })
   }</style>
 }

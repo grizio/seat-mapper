@@ -21,11 +21,9 @@ export default class NumberField extends Component<Props, State> {
   render(props: Props) {
     return (
       <div class="field">
-        <p class="field-label">
-          <label for={props.name}>{props.label}</label>
-        </p>
+        <label for={props.name} class="field-label">{props.label}</label>
 
-        <p>
+        <p class="field-input">
           <input type="number" name={props.name} id={props.name} min={props.min} max={props.max}
                  value={props.value.toString()}
                  onInput={this.onInput}/>
