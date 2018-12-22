@@ -1,12 +1,12 @@
 import {h} from "preact"
 import IconButton from "view/buttons/IconButton"
-import {AddIcon, TrashIcon} from "icons"
+import {AddIcon, TrashIcon} from "view/icons"
 import {Type} from "models/Type"
 import StringField from "view/form/StringField"
 import RadioField from "view/form/RadioField"
 import ColorField from "view/form/ColorField"
 import NumberField from "view/form/NumberField"
-import {State} from "../../store/State"
+import {State} from "store/State"
 
 interface Props {
   state: State

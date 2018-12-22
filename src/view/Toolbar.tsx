@@ -1,6 +1,6 @@
 import {h} from "preact"
 import IconButton from "./buttons/IconButton"
-import {AddGridIcon, AddLineIcon, AddSeatIcon, CrossIcon, EditIcon, TrashIcon} from "../icons"
+import {AddGridIcon, AddLineIcon, AddSeatIcon, CrossIcon, EditIcon, TrashIcon} from "view/icons"
 
 interface Props {
   add: () => void
