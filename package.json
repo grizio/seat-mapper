@@ -1,7 +1,7 @@
 {
-  "name": "theater-mapper",
+  "name": "seat-mapper",
   "version": "0.0.0",
-  "description": "Theater mapper",
+  "description": "Seat mapper",
   "scripts": {
     "build": "webpack --build --mode production --optimize-minimize",
     "start": "webpack-dev-server --watch --mode development --progress --colors --no-inline"
@@ -10,18 +10,19 @@
   "author": "Gaëtan Rizio",
   "license": "MIT",
   "dependencies": {
-    "preact": "8.3.1"
+    "preact": "8.4.2"
   },
   "devDependencies": {
-    "csstype": "^2.5.8",
+    "csstype": "2.5.8",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
     "http-server": "0.11.1",
-    "ts-loader": "5.2.2",
-    "tslint": "5.11.0",
-    "typescript": "3.1.3",
-    "webpack": "4.23.1",
+    "ts-loader": "5.3.2",
+    "tslint": "5.12.0",
+    "typescript": "3.2.2",
+    "uglifyjs-webpack-plugin": "2.1.0",
+    "webpack": "4.28.2",
     "webpack-cli": "3.1.2",
-    "webpack-dev-server": "3.1.10"
+    "webpack-dev-server": "3.1.12"
   }
 }
