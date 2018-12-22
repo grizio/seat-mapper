@@ -2,7 +2,7 @@ import { defaultPosition } from 'models/geometry'
 import { Component, h } from 'preact'
 import { State as StoreState } from 'store/State'
 import { Store } from 'store/Store'
-import { Map } from './Map'
+import { Map } from './map/Map'
 import { Styles } from './Styles'
 import { Toolbar } from './Toolbar'
 import RightPanel from "./rightPanel/RightPanel"

@@ -2,8 +2,8 @@ import {h} from "preact"
 import {State} from "store/State"
 import {Shadow} from "./Shadow";
 import SeatElement from "./SeatElement"
-import {onCurrentElement} from "../utils/view"
-import {arrayWithoutUndefined} from "../utils/array"
+import {onCurrentElement} from "utils/view"
+import {arrayWithoutUndefined} from "utils/array"
 
 interface Props {
   state: State
