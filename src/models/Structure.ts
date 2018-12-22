@@ -2,7 +2,7 @@ import {Seat, seatEqual} from "./Seat"
 import {isIncluded, normalizeZone, Zone} from "./geometry"
 import {seatToZone} from "./adapters"
 import {arrayEqual} from "../utils/array"
-import {defaultType, Type, typeEqual} from "./Type"
+import {defaultSeatType, defaultStageType, Type, typeEqual} from "./Type"
 
 export interface Structure {
   seats: Array<Seat>
@@ -11,7 +11,7 @@ export interface Structure {
 
 export const defaultStructure: Structure = {
   seats: [],
-  types: [defaultType]
+  types: [defaultSeatType, defaultStageType]
 }
 
 export function nextSeatId(structure: Structure): number {

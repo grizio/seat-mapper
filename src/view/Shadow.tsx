@@ -3,12 +3,11 @@ import {
   containingZone,
   Line,
   normalizeZone,
-  Pos,
   translateSeat,
   translateZone,
   Zone
 } from "models/geometry"
-import { Seat, seatHeight, seatWidth } from 'models/Seat'
+import { Seat } from 'models/Seat'
 import { h } from 'preact'
 import {
   ActionSeatContainer,
@@ -79,8 +78,8 @@ function renderShadowSeat(seat: Seat, props: Props) {
     return (
       <rect x={seat.x}
             y={seat.y}
-            width={seatWidth}
-            height={seatHeight}
+            width={seat.width}
+            height={seat.height}
             fill="transparent"
             strokeWidth={1}
             stroke="#555"
@@ -91,10 +90,10 @@ function renderShadowSeat(seat: Seat, props: Props) {
     )
   } else {
     return (
-      <ellipse cx={seat.x + seatWidth / 2}
-               cy={seat.y + seatHeight / 2}
-               rx={seatWidth / 2}
-               ry={seatHeight / 2}
+      <ellipse cx={seat.x + seat.width / 2}
+               cy={seat.y + seat.height / 2}
+               rx={seat.width / 2}
+               ry={seat.height / 2}
                fill="transparent"
                strokeWidth={1}
                stroke="#555"
@@ -115,25 +114,25 @@ function getSeatFigure(seat: Seat, props: Props) {
   }
 }
 
-function renderAlignmentLines(zone: Zone, seats: Array<Pos>) {
+function renderAlignmentLines(zone: Zone, seats: Array<Seat>) {
   const lines = seats.flatMap(seat => {
     const acc: Array<Line> = []
     // We voluntarily go out of bounds so the trace is more visible
     const margin = 10
     const x1 = Math.min(seat.x, zone.x1) - margin
     const y1 = Math.min(seat.y, zone.y1) - margin
-    const x2 = Math.max(seat.x + seatWidth, zone.x2) + margin
-    const y2 = Math.max(seat.y + seatHeight, zone.y2) + margin
+    const x2 = Math.max(seat.x + seat.width, zone.x2) + margin
+    const y2 = Math.max(seat.y + seat.height, zone.y2) + margin
 
     if (visuallyEqual(seat.x, zone.x1)) {
       acc.push({ x1: seat.x, y1: y1, x2: seat.x, y2: y2 })
     }
 
-    if (visuallyEqual(seat.x + seatWidth, zone.x2)) {
-      acc.push({ x1: seat.x + seatWidth, y1: y1, x2: seat.x + seatWidth, y2: y2 })
+    if (visuallyEqual(seat.x + seat.width, zone.x2)) {
+      acc.push({ x1: seat.x + seat.width, y1: y1, x2: seat.x + seat.width, y2: y2 })
     }
 
-    if (visuallyEqual(seat.x + seatWidth, zone.x1)) {
+    if (visuallyEqual(seat.x + seat.width, zone.x1)) {
       acc.push({x1: zone.x1, y1: y1, x2: zone.x1, y2: y2})
     }
 
@@ -145,11 +144,11 @@ function renderAlignmentLines(zone: Zone, seats: Array<Pos>) {
       acc.push({ x1: x1, y1: seat.y, x2: x2, y2: seat.y })
     }
 
-    if (visuallyEqual(seat.y + seatHeight, zone.y2)) {
-      acc.push({ x1: x1, y1: seat.y + seatHeight, x2: x2, y2: seat.y + seatHeight })
+    if (visuallyEqual(seat.y + seat.height, zone.y2)) {
+      acc.push({ x1: x1, y1: seat.y + seat.height, x2: x2, y2: seat.y + seat.height })
     }
 
-    if (visuallyEqual(seat.y + seatHeight, zone.y1)) {
+    if (visuallyEqual(seat.y + seat.height, zone.y1)) {
       acc.push({x1: x1, y1: zone.y1, x2: x2, y2: zone.y1})
     }
 

@@ -4,10 +4,12 @@ export interface Seat {
   name: string
   x: number
   y: number
+  width: number
+  height: number
 }
 
-export const seatWidth = 50
-export const seatHeight = 50
+export const defaultSeatWidth = 50
+export const defaultSeatHeight = 50
 
 export function seatEqual(seat1: Seat, seat2: Seat): boolean {
   return (

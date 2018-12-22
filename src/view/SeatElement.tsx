@@ -1,5 +1,5 @@
 import {Component, h} from "preact"
-import {Seat, seatHeight, seatWidth} from "models/Seat"
+import {Seat} from "models/Seat"
 import {State as StoreState} from "store/State"
 
 interface Props {
@@ -27,7 +27,7 @@ export default class SeatElement extends Component<Props, State> {
             ? this.renderRectangle(seat)
             : this.renderCircle(seat)
         }
-        <text x={seat.x + seatWidth / 2} y={seat.y + seatHeight / 2}
+        <text x={seat.x + seat.width / 2} y={seat.y + seat.height / 2}
               {...{
                 "dominant-baseline": "middle",
                 "text-anchor": "middle"
@@ -40,7 +40,7 @@ export default class SeatElement extends Component<Props, State> {
   renderRectangle = (seat: Seat) => {
     const type = this.getType()
     return (
-      <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
+      <rect x={seat.x} y={seat.y} width={seat.width} height={seat.height}
             fill={this.isSelected() ? "#ccc" : "#fff"}
             stroke={type.borderColor}
             {...{
@@ -54,8 +54,8 @@ export default class SeatElement extends Component<Props, State> {
     const type = this.getType()
     return (
       <ellipse
-        cx={seat.x + seatWidth / 2} cy={seat.y + seatHeight / 2}
-        rx={seatWidth / 2} ry={seatHeight / 2}
+        cx={seat.x + seat.width / 2} cy={seat.y + seat.height / 2}
+        rx={seat.width / 2} ry={seat.height / 2}
         fill={this.isSelected() ? "#ccc" : "#fff"}
         stroke={type.borderColor}
         {...{

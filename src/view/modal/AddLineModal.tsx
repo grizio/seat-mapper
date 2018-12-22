@@ -6,6 +6,7 @@ import RadioField from "../form/RadioField"
 import NumberField from "../form/NumberField"
 import StringField from "../form/StringField"
 import {Type} from "../../models/Type"
+import {defaultSeatHeight, defaultSeatWidth} from "../../models/Seat"
 
 interface Props {
   types: Array<Type>
@@ -22,6 +23,8 @@ interface State {
   changing: Changing
   order: Order
   type: number
+  seatWidth: number
+  seatHeight: number
 }
 
 export default function addLineModal(types: Array<Type>): Promise<State> {
@@ -39,7 +42,9 @@ class AddLineModal extends Component<Props, State> {
       firstNumber: 1,
       changing: "number",
       order: "ascending",
-      type: props.types[0].id
+      type: props.types[0].id,
+      seatWidth: defaultSeatWidth,
+      seatHeight: defaultSeatHeight
     }
   }
 
@@ -108,6 +113,18 @@ class AddLineModal extends Component<Props, State> {
                         }
                         value={state.type.toString()}
                         onChange={this.updateType}/>
+
+            <NumberField name="add-line-seat-width"
+                         label="Seat width"
+                         min={0}
+                         value={state.seatWidth}
+                         onChange={this.updateSeatWidth}/>
+
+            <NumberField name="add-line-seat-height"
+                         label="Seat height"
+                         min={0}
+                         value={state.seatHeight}
+                         onChange={this.updateSeatHeight}/>
           </div>
 
           <div class="col">
@@ -137,6 +154,10 @@ class AddLineModal extends Component<Props, State> {
   updateOrder = (order: Order) => this.setState({order})
 
   updateType = (type: string) => this.setState({type: parseInt(type, 10)})
+
+  updateSeatWidth = (seatWidth: number) => this.setState({seatWidth})
+
+  updateSeatHeight = (seatHeight: number) => this.setState({seatHeight})
 
   onSubmit = () => this.props.onSubmit(this.state)
 

@@ -91,6 +91,16 @@ export default class RightPanel extends Component<Props, {}> {
                      label="Y position"
                      value={seat.y}
                      onChange={y => props.updateSeat({...seat, y})}/>
+
+        <NumberField name={`right-panel-seat-${seat.id}-width`}
+                     label="Width"
+                     value={seat.width}
+                     onChange={width => props.updateSeat({...seat, width})}/>
+
+        <NumberField name={`right-panel-seat-${seat.id}-height`}
+                     label="Height"
+                     value={seat.height}
+                     onChange={height => props.updateSeat({...seat, height})}/>
       </details>
     )
   }
@@ -133,6 +143,15 @@ export default class RightPanel extends Component<Props, {}> {
                     label="Border width"
                     value={type.borderWidth}
                     onChange={borderWidth => props.updateType({...type, borderWidth})}/>
+
+        <RadioField name={`right-panel-type-${type.id}-bookable`}
+                    label="Bookable"
+                    options={[
+                      {label: "Yes", value: "true"},
+                      {label: "No", value: "false"}
+                    ]}
+                    value={type.bookable.toString()}
+                    onChange={bookable => props.updateType({...type, bookable: bookable === "true"})}/>
 
 
       </details>

@@ -1,5 +1,5 @@
 import {h} from "preact"
-import {Seat, seatHeight, seatWidth} from "models/Seat"
+import {Seat} from "models/Seat"
 import {seatToZone, zoneToRect} from "models/adapters"
 import {containingZone} from "models/geometry"
 import {Figure, Type} from "../../models/Type"
@@ -20,7 +20,7 @@ export default function Preview(props: Props) {
               ? renderRectangle(seat)
               : renderCircle(seat)
           }
-          <text x={seat.x + seatWidth / 2} y={seat.y + seatHeight / 2}
+          <text x={seat.x + seat.width / 2} y={seat.y + seat.height / 2}
                 {...{
                   "dominant-baseline": "middle",
                   "text-anchor": "middle"
@@ -43,7 +43,7 @@ function getSeatFigure(seat: Seat, types: Array<Type>): Figure {
 
 function renderRectangle(seat: Seat) {
   return (
-    <rect x={seat.x} y={seat.y} width={seatWidth} height={seatHeight}
+    <rect x={seat.x} y={seat.y} width={seat.width} height={seat.height}
           fill="#fff" stroke="black"
     />
   )
@@ -51,8 +51,8 @@ function renderRectangle(seat: Seat) {
 
 function renderCircle(seat: Seat) {
   return (
-    <ellipse cx={seat.x + seatWidth / 2} cy={seat.y + seatHeight / 2}
-             rx={seatWidth / 2} ry={seatHeight / 2}
+    <ellipse cx={seat.x + seat.width / 2} cy={seat.y + seat.height / 2}
+             rx={seat.width / 2} ry={seat.height / 2}
              fill="#fff" stroke="black"
     />
   )

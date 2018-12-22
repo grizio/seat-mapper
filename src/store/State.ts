@@ -1,4 +1,4 @@
-import {Seat, seatHeight, seatWidth} from "models/Seat"
+import {Seat} from "models/Seat"
 import {containingZone, defaultPosition, Pos, Zone} from "models/geometry"
 import {Structure} from "../models/Structure"
 
@@ -22,7 +22,7 @@ export interface ActionSeatContainer {
 }
 
 export function zoneOfActionSeatContainer(action: ActionSeatContainer): Zone {
-  return containingZone(action.seats.map(seat => ({ x1: seat.x, y1: seat.y, x2: seat.x + seatWidth, y2: seat.y + seatHeight })))
+  return containingZone(action.seats.map(seat => ({ x1: seat.x, y1: seat.y, x2: seat.x + seat.width, y2: seat.y + seat.height })))
 }
 
 export interface AddingSeats extends ActionSeatContainer {

@@ -22,7 +22,7 @@ import addGridModal from "view/modal/AddGridModal"
 import { magnet } from 'utils/view'
 import {generateSeatGrid, generateSeatLine} from "utils/generators"
 import renameSeatsModal from "../view/modal/RenameSeatsModal"
-import {Seat} from "../models/Seat"
+import {defaultSeatHeight, defaultSeatWidth, Seat} from "../models/Seat"
 import {
   addSeats, addType,
   nextSeatId, nextTypeId,
@@ -32,7 +32,7 @@ import {
   seatsByIds, seatsByZone,
   Structure
 } from "../models/Structure"
-import {defaultType, Type} from "../models/Type"
+import {defaultSeatType, Type} from "../models/Type"
 
 export class Store {
   private state: State
@@ -64,7 +64,9 @@ export class Store {
         type: this.state.structure.types[0].id,
         name: "",
         x: 0,
-        y: 0
+        y: 0,
+        width: defaultSeatWidth,
+        height: defaultSeatHeight
       }])
     })
   }
@@ -170,7 +172,9 @@ export class Store {
                 type: seatInfo.type,
                 name: seatInfo.name,
                 x: Math.round(seatInfo.x + action.position.x),
-                y: Math.round(seatInfo.y + action.position.y)
+                y: Math.round(seatInfo.y + action.position.y),
+                width: seatInfo.width,
+                height: seatInfo.height
               }))
             ),
             action: undefined
@@ -284,7 +288,7 @@ export class Store {
   public addType = () => {
     this.update({
       structure: addType(this.state.structure, {
-        ...defaultType,
+        ...defaultSeatType,
         id: nextTypeId(this.state.structure)
       })
     })

@@ -6,6 +6,7 @@ import RadioField from "../form/RadioField"
 import NumberField from "../form/NumberField"
 import StringField from "../form/StringField"
 import {Type} from "../../models/Type"
+import {defaultSeatHeight, defaultSeatWidth} from "../../models/Seat"
 
 interface Props {
   types: Array<Type>
@@ -25,6 +26,8 @@ interface State {
   letterOrder: Order
   numberOrder: Order
   type: number
+  seatWidth: number
+  seatHeight: number
 }
 
 export default function addGridModal(types: Array<Type>): Promise<State> {
@@ -45,7 +48,9 @@ class AddGridModal extends Component<Props, State> {
       letterDirection: "horizontal",
       letterOrder: "ascending",
       numberOrder: "ascending",
-      type: props.types[0].id
+      type: props.types[0].id,
+      seatWidth: defaultSeatWidth,
+      seatHeight: defaultSeatHeight
     }
   }
 
@@ -132,6 +137,18 @@ class AddGridModal extends Component<Props, State> {
                         }
                         value={state.type.toString()}
                         onChange={this.updateType}/>
+
+            <NumberField name="add-grid-seat-width"
+                         label="Seat width"
+                         min={0}
+                         value={state.seatWidth}
+                         onChange={this.updateSeatWidth}/>
+
+            <NumberField name="add-grid-seat-height"
+                         label="Seat height"
+                         min={0}
+                         value={state.seatHeight}
+                         onChange={this.updateSeatHeight}/>
           </div>
 
           <div class="col">
@@ -165,6 +182,10 @@ class AddGridModal extends Component<Props, State> {
   updateLetterOrder = (letterOrder: Order) => this.setState({letterOrder})
 
   updateNumberOrder = (numberOrder: Order) => this.setState({numberOrder})
+
+  updateSeatWidth = (seatWidth: number) => this.setState({seatWidth})
+
+  updateSeatHeight = (seatHeight: number) => this.setState({seatHeight})
 
   updateType = (type: string) => this.setState({type: parseInt(type, 10)})
 

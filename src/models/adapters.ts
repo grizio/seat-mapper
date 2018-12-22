@@ -1,12 +1,12 @@
 import {Rect, Zone} from "./geometry"
-import {Seat, seatHeight, seatWidth} from "./Seat"
+import {Seat} from "./Seat"
 
 export function seatToZone(seat: Seat): Zone {
   return {
     x1: seat.x,
     y1: seat.y,
-    x2: seat.x + seatWidth,
-    y2: seat.y + seatHeight
+    x2: seat.x + seat.width,
+    y2: seat.y + seat.height
   }
 }
 

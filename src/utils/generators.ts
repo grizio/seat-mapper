@@ -1,4 +1,4 @@
-import {Seat, seatHeight, seatWidth} from "../models/Seat"
+import {Seat} from "../models/Seat"
 import {arrayFill} from "./array"
 
 export type Direction = "horizontal" | "vertical"
@@ -14,9 +14,11 @@ interface GenerateSeatLineParameters {
   changing: Changing
   order: Order
   type: number
+  seatWidth: number
+  seatHeight: number
 }
 
-export function generateSeatLine({ direction, numberOfSeats, spacing, firstLetter, firstNumber, changing, order, type }: GenerateSeatLineParameters): Array<Seat> {
+export function generateSeatLine({ direction, numberOfSeats, spacing, firstLetter, firstNumber, changing, order, type, seatWidth, seatHeight }: GenerateSeatLineParameters): Array<Seat> {
   const posX = (index: number) => direction === "horizontal" ? (seatWidth + spacing) * index : 0
   const posY = (index: number) => direction === "vertical" ? (seatHeight + spacing) * index : 0
   const letter = (index: number) => {
@@ -47,7 +49,9 @@ export function generateSeatLine({ direction, numberOfSeats, spacing, firstLette
     type: type,
     name: `${letter(index)}${number(index)}`,
     x: posX(index),
-    y: posY(index)
+    y: posY(index),
+    width: seatWidth,
+    height: seatHeight
   }))
 }
 
@@ -91,12 +95,14 @@ interface GenerateSeatGridParameters {
   letterOrder: Order
   numberOrder: Order,
   type: number
+  seatWidth: number
+  seatHeight: number
 }
 
 export function generateSeatGrid({
   numberOfRows, numberOfColumns, columnSpacing, rowSpacing, shift,
   firstLetter, firstNumber, letterDirection, letterOrder, numberOrder,
-  type
+  type, seatWidth, seatHeight
 }: GenerateSeatGridParameters): Array<Seat> {
   const letter = (index: number, maxNumber: number) => {
     if (letterOrder === "ascending") {
@@ -127,7 +133,9 @@ export function generateSeatGrid({
         type: type,
         name: name(rowIndex, columnIndex),
         x: (seatWidth + rowSpacing) * columnIndex + (rowIndex * (shift) % (seatWidth + rowSpacing)),
-        y: (seatHeight + columnSpacing) * rowIndex
+        y: (seatHeight + columnSpacing) * rowIndex,
+        width: seatWidth,
+        height: seatHeight
       }
     })
   }).flat()
