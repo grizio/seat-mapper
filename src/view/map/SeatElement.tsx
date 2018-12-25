@@ -85,7 +85,7 @@ export default class SeatElement extends Component<Props, State> {
   }
 
   onClick = (event: MouseEvent) => {
-    this.props.selectSeat(this.props.seat.id, event.ctrlKey)
+    this.props.selectSeat(this.props.seat.id, event.ctrlKey || event.metaKey)
   }
 
   onMouseDown = () => {

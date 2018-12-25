@@ -1,3 +1,4 @@
+import i18n from 'i18n'
 import {h} from "preact"
 import IconButton from "view/buttons/IconButton"
 import {AddIcon, TrashIcon} from "view/icons"
@@ -18,10 +19,10 @@ interface Props {
 export default function TypesPanel(props: Props) {
   return (
     <div className="right-panel">
-      <h3>Types of seats</h3>
+      <h3>{i18n("rightPanel.typesOfSeats", props.state.language)}</h3>
       {props.state.structure.types.map(_ => TypeDetails(_, props))}
       <section>
-        <IconButton label="New type" onClick={props.addType}>
+        <IconButton label={i18n("rightPanel.newType", props.state.language)} onClick={props.addType}>
           <AddIcon/>
         </IconButton>
       </section>
@@ -45,38 +46,37 @@ function TypeDetails(type: Type, props: Props) {
       </summary>
 
       <StringField name={`right-panel-type-${type.id}-name`}
-                   label="Type name"
+                   label={i18n("rightPanel.typeName", props.state.language)}
                    value={type.name}
                    onChange={name => props.updateType({...type, name})}/>
 
       <RadioField name={`right-panel-type-${type.id}-figure`}
-                  label="Figure"
+                  label={i18n("rightPanel.figure", props.state.language)}
                   options={[
-                    {label: "Rectangle", value: "rectangle"},
-                    {label: "Circle", value: "circle"}
+                    {label: i18n("rightPanel.figure.rectangle", props.state.language), value: "rectangle"},
+                    {label: i18n("rightPanel.figure.circle", props.state.language), value: "circle"}
                   ]}
                   value={type.figure}
                   onChange={figure => props.updateType({...type, figure})}/>
 
       <ColorField name={`right-panel-type-${type.id}-border-color`}
-                  label="Border color"
+                  label={i18n("rightPanel.borderColor", props.state.language)}
                   value={type.borderColor}
                   onChange={borderColor => props.updateType({...type, borderColor})}/>
 
       <NumberField name={`right-panel-type-${type.id}-border-width`}
-                   label="Border width"
+                   label={i18n("rightPanel.borderWidth", props.state.language)}
                    value={type.borderWidth}
                    onChange={borderWidth => props.updateType({...type, borderWidth})}/>
 
       <RadioField name={`right-panel-type-${type.id}-bookable`}
-                  label="Bookable"
+                  label={i18n("rightPanel.bookable", props.state.language)}
                   options={[
-                    {label: "Yes", value: "true"},
-                    {label: "No", value: "false"}
+                    {label: i18n("rightPanel.bookable.true", props.state.language), value: "true"},
+                    {label: i18n("rightPanel.bookable.false", props.state.language), value: "false"}
                   ]}
                   value={type.bookable.toString()}
                   onChange={bookable => props.updateType({...type, bookable: bookable === "true"})}/>
-
 
     </details>
   )

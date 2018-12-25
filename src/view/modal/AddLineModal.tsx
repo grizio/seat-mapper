@@ -7,8 +7,10 @@ import NumberField from "../form/NumberField"
 import StringField from "../form/StringField"
 import {Type} from "../../models/Type"
 import {defaultSeatHeight, defaultSeatWidth} from "../../models/Seat"
+import i18n, { Language } from "../../i18n"
 
 interface Props {
+  language: Language | undefined
   types: Array<Type>
   onSubmit: (state: State) => void
   onCancel: () => void
@@ -27,8 +29,8 @@ interface State {
   seatHeight: number
 }
 
-export default function addLineModal(types: Array<Type>): Promise<State> {
-  return promisedModal(AddLineModal, {types})
+export default function addLineModal(types: Array<Type>, language: Language | undefined): Promise<State> {
+  return promisedModal(AddLineModal, {types, language})
 }
 
 class AddLineModal extends Component<Props, State> {
@@ -50,61 +52,61 @@ class AddLineModal extends Component<Props, State> {
 
   render(props: Props, state: State) {
     return (
-      <Modal title="Add a line of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
+      <Modal title={i18n("addLineModal.title", props.language)} onSubmit={this.onSubmit} onCancel={this.onCancel}>
         <div class="row">
           <div class="col">
             <RadioField name="add-line-direction"
-                        label="Direction"
+                        label={i18n("addLineModal.direction", props.language)}
                         options={[
-                          {label: "Horizontal", value: "horizontal"},
-                          {label: "Vertical", value: "vertical"}
+                          {label: i18n("addLineModal.direction.horizontal", props.language), value: "horizontal"},
+                          {label: i18n("addLineModal.direction.vertical", props.language), value: "vertical"}
                         ]}
                         value={state.direction}
                         onChange={this.updateDirection}/>
 
             <NumberField name="add-line-number-of-seats"
-                         label="Number of seats"
+                         label={i18n("addLineModal.numberOfSeats", props.language)}
                          min={1}
                          value={state.numberOfSeats}
                          onChange={this.updateNumberOfSeats}/>
 
             <NumberField name="add-line-spacing"
-                         label="Spacing between seats"
+                         label={i18n("addLineModal.spacing", props.language)}
                          min={0}
                          value={state.spacing}
                          onChange={this.updateSpacing}/>
 
             <StringField name="add-line-first-letter"
-                         label="First letter"
+                         label={i18n("addLineModal.firstLetter", props.language)}
                          value={state.firstLetter}
                          onChange={this.updateFirstLetter}/>
 
             <NumberField name="add-line-first-number"
-                         label="First number"
+                         label={i18n("addLineModal.firstNumber", props.language)}
                          min={0}
                          value={state.firstNumber}
                          onChange={this.updateFirstNumber}/>
             
             <RadioField name="add-line-changing"
-                        label="Changing"
+                        label={i18n("addLineModal.changing", props.language)}
                         options={[
-                          {label: "Letter", value: "letter"},
-                          {label: "Number", value: "number"}
+                          {label: i18n("addLineModal.changing.letter", props.language), value: "letter"},
+                          {label: i18n("addLineModal.changing.number", props.language), value: "number"}
                         ]}
                         value={state.changing}
                         onChange={this.updateChanging}/>
 
             <RadioField name="add-line-order"
-                        label="Order"
+                        label={i18n("addLineModal.order", props.language)}
                         options={[
-                          {label: "Ascending", value: "ascending"},
-                          {label: "Descending", value: "descending"}
+                          {label: i18n("addLineModal.order.ascending", props.language), value: "ascending"},
+                          {label: i18n("addLineModal.order.descending", props.language), value: "descending"}
                         ]}
                         value={state.order}
                         onChange={this.updateOrder}/>
 
             <RadioField name="add-line-type"
-                        label="Type"
+                        label={i18n("addLineModal.type", props.language)}
                         options={
                           props.types.map(type => ({
                             label: type.name,
@@ -115,13 +117,13 @@ class AddLineModal extends Component<Props, State> {
                         onChange={this.updateType}/>
 
             <NumberField name="add-line-seat-width"
-                         label="Seat width"
+                         label={i18n("addLineModal.seatWidth", props.language)}
                          min={0}
                          value={state.seatWidth}
                          onChange={this.updateSeatWidth}/>
 
             <NumberField name="add-line-seat-height"
-                         label="Seat height"
+                         label={i18n("addLineModal.seatHeight", props.language)}
                          min={0}
                          value={state.seatHeight}
                          onChange={this.updateSeatHeight}/>

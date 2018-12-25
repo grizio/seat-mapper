@@ -33,6 +33,7 @@ import {
   Structure
 } from "models/Structure"
 import {defaultSeatType, Type} from "models/Type"
+import { Language } from "../i18n"
 
 export class Store {
   private state: State
@@ -49,9 +50,10 @@ export class Store {
     this.listener(this.state)
   }
 
-  public reload = (structure: Structure) => {
+  public reload = (structure: Structure, language?: Language) => {
     this.update({
       structure,
+      language,
       selectedSeatIds: [],
       action: undefined
     })
@@ -72,7 +74,7 @@ export class Store {
   }
 
   public startAddLine = () => {
-    addLineModal(this.state.structure.types)
+    addLineModal(this.state.structure.types, this.state.language)
       .then((parameters) => {
         this.update({
           action: addingSeats(generateSeatLine(parameters))
@@ -81,7 +83,7 @@ export class Store {
   }
 
   public startAddGrid = () => {
-    addGridModal(this.state.structure.types)
+    addGridModal(this.state.structure.types, this.state.language)
       .then((parameters) => {
         this.update({
           action: addingSeats(generateSeatGrid(parameters))
@@ -100,7 +102,7 @@ export class Store {
   private renameSeats = (seatIds: Array<number>) => {
     const seats = seatsByIds(this.state.structure, seatIds)
     if (seats.length > 0) {
-      renameSeatsModal(seats)
+      renameSeatsModal(seats, this.state.language)
         .then(({seats: seatPatches}) => {
           this.update({
             structure: patchSeats(this.state.structure, seatPatches)

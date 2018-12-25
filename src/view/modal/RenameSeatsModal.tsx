@@ -2,8 +2,10 @@ import {Component, h} from "preact"
 import {Modal, promisedModal} from "./Modal"
 import {Seat} from "../../models/Seat"
 import StringField from "../form/StringField"
+import i18n, { Language } from "../../i18n"
 
 interface Props {
+  language: Language | undefined
   seats: Array<Seat>
   onSubmit: (state: State) => void
   onCancel: () => void
@@ -19,8 +21,8 @@ interface RenamingSeat {
   name: string
 }
 
-export default function renameSeatsModal(seats: Array<Seat>): Promise<State> {
-  return promisedModal(RenameSeatsModal, {seats})
+export default function renameSeatsModal(seats: Array<Seat>, language: Language | undefined): Promise<State> {
+  return promisedModal(RenameSeatsModal, {seats, language})
 }
 
 class RenameSeatsModal extends Component<Props, State> {
@@ -35,9 +37,9 @@ class RenameSeatsModal extends Component<Props, State> {
     }
   }
 
-  render(_: Props, state: State) {
+  render(props: Props, state: State) {
     return (
-      <Modal title="Update seat names" onSubmit={this.onSubmit} onCancel={this.onCancel}>
+      <Modal title={i18n("renameSeatsModal.title", props.language)} onSubmit={this.onSubmit} onCancel={this.onCancel}>
         {
           state.seats.map(seat => (
             <StringField name={`rename-seat-${seat.id}`}

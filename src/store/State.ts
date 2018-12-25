@@ -1,9 +1,11 @@
 import {Seat} from "models/Seat"
 import {containingZone, defaultPosition, Pos, Zone} from "models/geometry"
 import {Structure} from "models/Structure"
+import { Language } from "../i18n"
 
 export interface State {
   structure: Structure
+  language?: Language
   selectedSeatIds: Array<number>
   translation: Pos
   mousePosition: Pos

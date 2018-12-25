@@ -1,3 +1,4 @@
+import { Language } from 'i18n'
 import { defaultPosition } from 'models/geometry'
 import { Component, h } from 'preact'
 import { State as StoreState } from 'store/State'
@@ -10,6 +11,7 @@ import {defaultStructure, hasStructureChanged, Structure} from "../models/Struct
 
 interface Props {
   initialStructure?: Structure
+  language?: Language
   onChange: (structure: Structure) => void
 }
 
@@ -24,6 +26,7 @@ export default class SeatMapper extends Component<Props, State> {
     super(props)
     this.store = new Store(
       {
+        language: props.language,
         structure: props.initialStructure || defaultStructure,
         selectedSeatIds: [],
         translation: defaultPosition,
@@ -34,7 +37,7 @@ export default class SeatMapper extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    this.store.reload(nextProps.initialStructure || defaultStructure)
+    this.store.reload(nextProps.initialStructure || defaultStructure, nextProps.language)
   }
 
   onStoreUpdate = (state: StoreState) => {
@@ -48,6 +51,7 @@ export default class SeatMapper extends Component<Props, State> {
     return <div class="host" onKeyPress={this.onKeyPress} tabIndex={-1}>
       <Styles/>
       <Toolbar
+        language={state.state.language}
         add={this.store.startAddSeat}
         startAddLine={this.store.startAddLine}
         startAddGrid={this.store.startAddGrid}

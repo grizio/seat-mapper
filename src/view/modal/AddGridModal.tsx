@@ -7,8 +7,10 @@ import NumberField from "../form/NumberField"
 import StringField from "../form/StringField"
 import {Type} from "../../models/Type"
 import {defaultSeatHeight, defaultSeatWidth} from "../../models/Seat"
+import i18n, { Language } from "../../i18n"
 
 interface Props {
+  language: Language | undefined
   types: Array<Type>
   onSubmit: (state: State) => void
   onCancel: () => void
@@ -30,8 +32,8 @@ interface State {
   seatHeight: number
 }
 
-export default function addGridModal(types: Array<Type>): Promise<State> {
-  return promisedModal(AddGridModal, {types})
+export default function addGridModal(types: Array<Type>, language: Language | undefined): Promise<State> {
+  return promisedModal(AddGridModal, {types, language})
 }
 
 class AddGridModal extends Component<Props, State> {
@@ -56,79 +58,79 @@ class AddGridModal extends Component<Props, State> {
 
   render(props: Props, state: State) {
     return (
-      <Modal title="Add a grid of seats" onSubmit={this.onSubmit} onCancel={this.onCancel}>
+      <Modal title={i18n("addGridModal.title", props.language)} onSubmit={this.onSubmit} onCancel={this.onCancel}>
         <div class="row">
           <div class="col">
             <NumberField name="add-grid-number-of-rows"
-                         label="Number of rows"
+                         label={i18n("addGridModal.numberOfRows", props.language)}
                          min={1}
                          value={state.numberOfRows}
                          onChange={this.updateNumberOfRows}/>
 
             <NumberField name="add-grid-number-of-columns"
-                         label="Number of seats per row"
+                         label={i18n("addGridModal.numberOfColumns", props.language)}
                          min={1}
                          value={state.numberOfColumns}
                          onChange={this.updateNumberOfColumns}/>
 
             <NumberField name="add-grid-column-spacing"
-                         label="Spacing between two rows"
+                         label={i18n("addGridModal.columnSpacing", props.language)}
                          min={0}
                          value={state.columnSpacing}
                          onChange={this.updateColumnSpacing}/>
 
             <NumberField name="add-grid-row-spacing"
-                         label="Spacing between two seats in a row"
+                         label={i18n("addGridModal.rowSpacing", props.language)}
                          min={0}
                          value={state.rowSpacing}
                          onChange={this.updateRowSpacing}/>
 
             <NumberField name="add-grid-shift"
-                         label="Shift between two rows"
+                         label={i18n("addGridModal.shift", props.language)}
                          min={0}
                          value={state.shift}
                          onChange={this.updateShift}/>
 
             <StringField name="add-grid-first-letter"
-                         label="First letter"
+                         label={i18n("addGridModal.firstLetter", props.language)}
                          value={state.firstLetter}
                          onChange={this.updateFirstLetter}/>
 
             <NumberField name="add-grid-first-number"
-                         label="First number"
+                         label={i18n("addGridModal.firstNumber", props.language)}
                          min={0}
                          value={state.firstNumber}
                          onChange={this.updateFirstNumber}/>
 
             <RadioField name="add-grid-letter-direction"
-                        label="Letter direction"
+                        label={i18n("addGridModal.letterDirection", props.language)}
                         options={[
-                          {label: "Horizontal", value: "horizontal"},
-                          {label: "Vertical", value: "vertical"}
+                          {label: i18n("addGridModal.letterDirection.horizontal", props.language), value: "horizontal"},
+                          {label: i18n("addGridModal.letterDirection.vertical", props.language), value: "vertical"}
                         ]}
                         value={state.letterDirection}
                         onChange={this.updateLetterDirection}/>
 
             <RadioField name="add-grid-letter-order"
-                        label="Letter order"
+                        label={i18n("addGridModal.letterOrder", props.language)}
                         options={[
-                          {label: "Ascending", value: "ascending"},
-                          {label: "Descending", value: "descending"}
+                          {label: i18n("addGridModal.letterOrder.ascending", props.language), value: "ascending"},
+                          {label: i18n("addGridModal.letterOrder.descending", props.language), value: "descending"}
                         ]}
                         value={state.letterOrder}
                         onChange={this.updateLetterOrder}/>
 
             <RadioField name="add-grid-number-order"
-                        label="Number order"
+                        label={i18n("addGridModal.numberOrder", props.language)}
                         options={[
-                          {label: "Ascending", value: "ascending"},
-                          {label: "Descending", value: "descending"}
+                          {label: i18n("addGridModal.numberOrder.ascending", props.language), value: "ascending"},
+                          {label: i18n("addGridModal.numberOrder.descending", props.language), value: "descending"}
                         ]}
                         value={state.numberOrder}
                         onChange={this.updateNumberOrder}/>
 
             <RadioField name="add-grid-type"
-                        label="Type"
+                        label={i18n("addGridModal.type", props.language)}
                         options={
                           props.types.map(type => ({
                             label: type.name,
@@ -139,13 +141,13 @@ class AddGridModal extends Component<Props, State> {
                         onChange={this.updateType}/>
 
             <NumberField name="add-grid-seat-width"
-                         label="Seat width"
+                         label={i18n("addGridModal.seatWidth", props.language)}
                          min={0}
                          value={state.seatWidth}
                          onChange={this.updateSeatWidth}/>
 
             <NumberField name="add-grid-seat-height"
-                         label="Seat height"
+                         label={i18n("addGridModal.seatHeight", props.language)}
                          min={0}
                          value={state.seatHeight}
                          onChange={this.updateSeatHeight}/>
