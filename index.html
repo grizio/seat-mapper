@@ -1,5 +1,8 @@
-<!doctype html> <html> <head> <meta charset=UTF-8> <meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"> <meta http-equiv=X-UA-Compatible content="ie=edge"> <title>Seat mapper</title> <link rel=stylesheet href=https://use.fontawesome.com/releases/v5.4.2/css/all.css integrity=sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns crossorigin=anonymous> <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i" rel=stylesheet> <style>body,html{width:100vw;height:100vh;overflow:auto;margin:0;padding:0}body{display:flex;flex-direction:column;align-items:stretch}#mapper{border:1px solid #eee;flex-grow:1}</style> </head> <body> <h1>Seat mapper</h1> <div id=mapper> <seat-mapper></seat-mapper> </div> <script> window.addEventListener("load", () => {
-    Array.from(document.querySelectorAll("seat-mapper")).forEach(seatMapper => {
+<!doctype html> <html> <head> <meta charset=UTF-8> <meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"> <meta http-equiv=X-UA-Compatible content="ie=edge"> <title>Seat mapper</title> <link rel=stylesheet href=https://use.fontawesome.com/releases/v5.4.2/css/all.css integrity=sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns crossorigin=anonymous> <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i" rel=stylesheet> <style>body,html{width:100vw;height:100vh;overflow:auto;margin:0;padding:0}body{display:flex;flex-direction:column;align-items:stretch}#mapper{border:1px solid #eee;flex-grow:1}</style> </head> <body> <h1>Seat mapper</h1> <div id=mapper> <seat-mapper></seat-mapper> <div style=display:flex;justify-content:center> <seat-mapper-preview></seat-mapper-preview> </div> </div> <script> window.addEventListener("load", () => {
+    const seatMappers = Array.from(document.querySelectorAll("seat-mapper"))
+    const seatMapperPreviews = Array.from(document.querySelectorAll("seat-mapper-preview"))
+
+    seatMappers.forEach(seatMapper => {
       const storedTheaterMapperTest = sessionStorage.getItem("seat-mapper-test")
       if (storedTheaterMapperTest !== null) {
         seatMapper.setAttribute("initial-structure", storedTheaterMapperTest)
@@ -7,6 +10,14 @@
 
       seatMapper.addEventListener("change", (event) => {
         sessionStorage.setItem("seat-mapper-test", JSON.stringify(event.structure))
+        seatMapperPreviews.forEach(seatMapperPreview => seatMapperPreview.setAttribute("structure", JSON.stringify(event.structure)))
       })
+    })
+
+    seatMapperPreviews.forEach(seatMapperPreview => {
+      const storedTheaterMapperTest = sessionStorage.getItem("seat-mapper-test")
+      if (storedTheaterMapperTest !== null) {
+        seatMapperPreview.setAttribute("structure", storedTheaterMapperTest)
+      }
     })
   }) </script> <script type="text/javascript" src="index.js"></script></body> </html>
