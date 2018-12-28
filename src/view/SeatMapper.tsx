@@ -27,7 +27,7 @@ export default class SeatMapper extends Component<Props, State> {
     this.store = new Store(
       {
         language: props.language,
-        structure: props.initialStructure || defaultStructure,
+        structure: props.initialStructure || defaultStructure(props.language),
         selectedSeatIds: [],
         translation: defaultPosition,
         mousePosition: defaultPosition
@@ -37,7 +37,7 @@ export default class SeatMapper extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    this.store.reload(nextProps.initialStructure || defaultStructure, nextProps.language)
+    this.store.reload(nextProps.initialStructure || defaultStructure(nextProps.language), nextProps.language)
   }
 
   onStoreUpdate = (state: StoreState) => {

@@ -62,6 +62,8 @@ const en: I18N = {
   "addGridModal.type": "Type",
   "addGridModal.seatWidth": "Seat width",
   "addGridModal.seatHeight": "Seat height",
-  "renameSeatsModal.title": "Update seat names"
+  "renameSeatsModal.title": "Update seat names",
+  "types.default.seat": "Seat",
+  "types.default.stage": "Stage"
 }
 export default en

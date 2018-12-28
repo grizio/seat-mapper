@@ -61,4 +61,6 @@ export interface I18N {
   "addGridModal.seatWidth": string
   "addGridModal.seatHeight": string
   "renameSeatsModal.title": string
+  "types.default.seat": string
+  "types.default.stage": string
 }

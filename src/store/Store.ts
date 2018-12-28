@@ -290,7 +290,7 @@ export class Store {
   public addType = () => {
     this.update({
       structure: addType(this.state.structure, {
-        ...defaultSeatType,
+        ...defaultSeatType(this.state.language),
         id: nextTypeId(this.state.structure)
       })
     })

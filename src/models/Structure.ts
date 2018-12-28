@@ -3,15 +3,18 @@ import {isIncluded, normalizeZone, Zone} from "./geometry"
 import {seatToZone} from "./adapters"
 import {arrayEqual} from "utils/array"
 import {defaultSeatType, defaultStageType, Type, typeEqual} from "./Type"
+import { Language } from "../i18n"
 
 export interface Structure {
   seats: Array<Seat>
   types: Array<Type>
 }
 
-export const defaultStructure: Structure = {
-  seats: [],
-  types: [defaultSeatType, defaultStageType]
+export function defaultStructure(language?: Language): Structure {
+  return {
+    seats: [],
+    types: [defaultSeatType(language), defaultStageType(language)]
+  }
 }
 
 export function nextSeatId(structure: Structure): number {

@@ -1,3 +1,5 @@
+import i18n, { Language } from "../i18n"
+
 export interface Type {
   id: number
   name: string
@@ -9,22 +11,26 @@ export interface Type {
 
 export type Figure = "rectangle" | "circle"
 
-export const defaultSeatType: Type = {
-  id: 1,
-  name: "Seat",
-  figure: "rectangle",
-  borderColor: "#000",
-  borderWidth: 1,
-  bookable: true
+export function defaultSeatType(language?: Language): Type {
+  return {
+    id: 1,
+    name: i18n("types.default.seat", language),
+    figure: "rectangle",
+    borderColor: "#000",
+    borderWidth: 1,
+    bookable: true
+  }
 }
 
-export const defaultStageType: Type = {
-  id: 2,
-  name: "Stage",
-  figure: "rectangle",
-  borderColor: "#000",
-  borderWidth: 5,
-  bookable: false
+export function defaultStageType(language?: Language): Type {
+  return {
+    id: 2,
+    name: i18n("types.default.stage", language),
+    figure: "rectangle",
+    borderColor: "#000",
+    borderWidth: 5,
+    bookable: false
+  }
 }
 
 export function typeEqual(type1: Type, type2: Type): boolean {
