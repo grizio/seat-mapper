@@ -170,7 +170,7 @@ function renderAlignmentLines(zone: Zone, seats: Array<Seat>) {
 }
 
 function renderInitialZoneLines(action: MovingSeats) {
-  const zone = translateZone(containingZone(action.seats.map(seatToZone)), action.initialPosition)
+  const zone = translateZone(containingZone(action.seats.map(_ => seatToZone(_))), action.initialPosition)
   const rect = zoneToRect(zone)
   return (
     <rect x={rect.x} y={rect.y} width={rect.width} height={rect.height}

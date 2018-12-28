@@ -1,5 +1,5 @@
 import {Component, ComponentChildren, ComponentFactory, h, render} from "preact"
-import {renderStyles} from "../../utils/view"
+import {renderStyles} from "utils/styles"
 import {formStyles} from "../form/formStyles"
 
 interface ComponentFactoryLifecycle<Output> {

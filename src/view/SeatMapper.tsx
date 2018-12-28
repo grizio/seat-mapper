@@ -4,10 +4,11 @@ import { Component, h } from 'preact'
 import { State as StoreState } from 'store/State'
 import { Store } from 'store/Store'
 import { Map } from './map/Map'
-import { Styles } from './Styles'
 import { Toolbar } from './Toolbar'
 import RightPanel from "./rightPanel/RightPanel"
 import {defaultStructure, hasStructureChanged, Structure} from "../models/Structure"
+import {renderStyles} from "utils/styles"
+import seatMapperStyles from "./styles/seatMapperStyles"
 
 interface Props {
   initialStructure?: Structure
@@ -49,7 +50,7 @@ export default class SeatMapper extends Component<Props, State> {
 
   render({}: Props, state: State): preact.ComponentChild {
     return <div class="host" onKeyPress={this.onKeyPress} tabIndex={-1}>
-      <Styles/>
+      <style>{renderStyles(seatMapperStyles)}</style>
       <Toolbar
         language={state.state.language}
         add={this.store.startAddSeat}

@@ -36,11 +36,17 @@
 
 <div id="mapper">
   <seat-mapper></seat-mapper>
+  <div style="display: flex;justify-content: center">
+    <seat-mapper-preview></seat-mapper-preview>
+  </div>
 </div>
 
 <script>
   window.addEventListener("load", () => {
-    Array.from(document.querySelectorAll("seat-mapper")).forEach(seatMapper => {
+    const seatMappers = Array.from(document.querySelectorAll("seat-mapper"))
+    const seatMapperPreviews = Array.from(document.querySelectorAll("seat-mapper-preview"))
+
+    seatMappers.forEach(seatMapper => {
       const storedTheaterMapperTest = sessionStorage.getItem("seat-mapper-test")
       if (storedTheaterMapperTest !== null) {
         seatMapper.setAttribute("initial-structure", storedTheaterMapperTest)
@@ -48,7 +54,15 @@
 
       seatMapper.addEventListener("change", (event) => {
         sessionStorage.setItem("seat-mapper-test", JSON.stringify(event.structure))
+        seatMapperPreviews.forEach(seatMapperPreview => seatMapperPreview.setAttribute("structure", JSON.stringify(event.structure)))
       })
+    })
+
+    seatMapperPreviews.forEach(seatMapperPreview => {
+      const storedTheaterMapperTest = sessionStorage.getItem("seat-mapper-test")
+      if (storedTheaterMapperTest !== null) {
+        seatMapperPreview.setAttribute("structure", storedTheaterMapperTest)
+      }
     })
   })
 </script>

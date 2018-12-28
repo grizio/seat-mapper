@@ -2,7 +2,7 @@ import {h} from "preact"
 import {Seat} from "models/Seat"
 import {seatToZone, zoneToRect} from "models/adapters"
 import {containingZone} from "models/geometry"
-import {Figure, Type} from "../../models/Type"
+import {Figure, Type} from "models/Type"
 
 interface Props {
   seats: Array<Seat>
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function Preview(props: Props) {
-  const rect = zoneToRect(containingZone(props.seats.map(seatToZone)))
+  const rect = zoneToRect(containingZone(props.seats.map(_ => seatToZone(_))))
   return (
     <svg viewBox={`${rect.x - 5} ${rect.y - 5} ${rect.width + 10} ${rect.height + 10}`} width={800} height={500}>
       {props.seats.map(seat => (

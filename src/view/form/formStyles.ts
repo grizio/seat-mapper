@@ -1,4 +1,4 @@
-import {Declaration} from "utils/view"
+import {Declaration} from "utils/styles"
 
 export const formStyles: Declaration = {
   ".field": {

@@ -1,12 +1,14 @@
 import {Rect, Zone} from "./geometry"
 import {Seat} from "./Seat"
+import {Type} from "./Type"
 
-export function seatToZone(seat: Seat): Zone {
+export function seatToZone(seat: Seat, type?: Type): Zone {
+  const borderWidth = type !== undefined ? type.borderWidth : 0
   return {
-    x1: seat.x,
-    y1: seat.y,
-    x2: seat.x + seat.width,
-    y2: seat.y + seat.height
+    x1: seat.x - borderWidth,
+    y1: seat.y - borderWidth,
+    x2: seat.x + seat.width + borderWidth,
+    y2: seat.y + seat.height + borderWidth
   }
 }
 

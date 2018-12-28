@@ -1,8 +1,9 @@
-import {h, render} from "preact"
 import SeatMapper from "view/SeatMapper"
 import {defaultStructure, Structure} from "./models/Structure"
 import {exportStructure, importStructure, Version, VersionedStructure} from "./api/api"
 import { Language } from "./i18n"
+import {preactWrapper} from "./utils/preactWrapper"
+import SeatMapperPreview from "./view/SeatMapperPreview"
 
 export class SeatMapperChangeEvent extends Event {
   public readonly structure: Readonly<VersionedStructure>
@@ -13,44 +14,33 @@ export class SeatMapperChangeEvent extends Event {
   }
 }
 
-customElements.define("seat-mapper", class extends HTMLElement {
-  private readonly shadow: ShadowRoot
-  private currentElement: Element | undefined
-
-  constructor() {
-    super()
-    this.shadow = this.attachShadow({mode: "open"})
-  }
-
-  static get observedAttributes() {
-    return ["initial-structure", "language"]
-  }
-
-  connectedCallback() {
-    this.render()
-  }
-
-  attributeChangedCallback() {
-    this.render()
-  }
-
-  render() {
-    if (this.isConnected) {
-      this.currentElement = render(h(SeatMapper, this.getProps()), this.shadow, this.currentElement)
-    }
-  }
-
-  getProps() {
-    const initialStructureAttribute = this.getAttribute("initial-structure")
+customElements.define("seat-mapper", preactWrapper(
+  SeatMapper,
+  ["initial-structure", "language"],
+  htmlElement => {
+    const initialStructureAttribute = htmlElement.getAttribute("initial-structure")
     const initialVersionedStructure = initialStructureAttribute !== null ? JSON.parse(initialStructureAttribute) : undefined
     const initialStructure = initialVersionedStructure !== undefined ? importStructure(initialVersionedStructure) : undefined
     return {
       initialStructure: initialStructure,
-      language: this.getAttribute("language") as Language || undefined,
+      language: htmlElement.getAttribute("language") as Language || undefined,
       onChange: (structure: Structure) => {
-        const version = this.getAttribute("version") as Version || undefined
-        this.dispatchEvent(new SeatMapperChangeEvent(exportStructure(structure || defaultStructure, version)))
+        const version = htmlElement.getAttribute("version") as Version || undefined
+        htmlElement.dispatchEvent(new SeatMapperChangeEvent(exportStructure(structure || defaultStructure, version)))
       }
     }
   }
-})
+))
+
+customElements.define("seat-mapper-preview", preactWrapper(
+  SeatMapperPreview,
+  ["structure"],
+  htmlElement => {
+    const structureAttribute = htmlElement.getAttribute("structure")
+    const versionedStructure = structureAttribute !== null ? JSON.parse(structureAttribute) : undefined
+    const structure = versionedStructure !== undefined ? importStructure(versionedStructure) : undefined
+    return {
+      structure: structure || defaultStructure()
+    }
+  }
+))

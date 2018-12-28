@@ -146,7 +146,7 @@ export class Store {
   }
 
   public startMoveSeats = () => {
-    const zone = containingZone(this.getSelectedSeats().map(seatToZone))
+    const zone = containingZone(this.getSelectedSeats().map(_ => seatToZone(_)))
     this.update({
       action: movingSeats(
         this.getSelectedSeats().map(seat => translateSeat(seat, negativePosition({x: zone.x1, y: zone.y1}))),
@@ -230,7 +230,7 @@ export class Store {
         })
       } else if (isMovingSeats(action)) {
         const newPosition = translatePosition(position, negativePosition(action.positionInAction))
-        const containerZone = containingZone(action.seats.map(seatToZone))
+        const containerZone = containingZone(action.seats.map(_ => seatToZone(_)))
         const magnetizedPosition = magnet(translateZone(containerZone, newPosition), translateZone(containerZone, action.initialPosition))
         this.update({
           action: {
