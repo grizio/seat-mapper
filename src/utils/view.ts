@@ -47,3 +47,28 @@ export function onCurrentElement<SpecificEvent extends Event>(handler: (event: S
     }
   }
 }
+
+export function clientPositionFromEvent(event: MouseEvent): Pos {
+  const allScrollsElement = allScrolls(event.currentTarget as HTMLElement)
+  return {
+    x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft + allScrollsElement.left,
+    y: event.clientY - (event.currentTarget as HTMLElement).offsetTop + allScrollsElement.top
+  }
+}
+
+function allScrolls(element: HTMLElement): { top: number, left: number } {
+  const result = {top: 0, left: 0}
+  let currentElement: Node | null = element
+  while (currentElement) {
+    result.top += (currentElement as HTMLElement).scrollTop || 0
+    result.left += (currentElement as HTMLElement).scrollLeft || 0
+
+    // We need to take into account we could be into a shadow root (at least for `<seat-mapper>` element)
+    if ((currentElement as ShadowRoot).host) {
+      currentElement = (currentElement as ShadowRoot).host
+    } else {
+      currentElement = currentElement.parentNode as HTMLElement
+    }
+  }
+  return result
+}

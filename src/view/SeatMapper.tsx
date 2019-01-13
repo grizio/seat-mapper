@@ -9,6 +9,7 @@ import RightPanel from "./rightPanel/RightPanel"
 import {defaultStructure, hasStructureChanged, Structure} from "../models/Structure"
 import {renderStyles} from "utils/styles"
 import seatMapperStyles from "./styles/seatMapperStyles"
+import {clientPositionFromEvent} from "../utils/view"
 
 interface Props {
   initialStructure?: Structure
@@ -84,16 +85,12 @@ export default class SeatMapper extends Component<Props, State> {
     </div>
   }
 
-  mousemove = (event: MouseEvent) => this.store.updateMousePosition({
-    x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft + document.body.scrollLeft,
-    y: event.clientY - (event.currentTarget as HTMLElement).offsetTop + document.body.scrollTop
-  })
+  mousemove = (event: MouseEvent) => {
+    this.store.updateMousePosition(clientPositionFromEvent(event))
+  }
   mousedown = (event: MouseEvent) => {
     if (event.shiftKey) {
-      this.store.startGraping({
-        x: event.clientX - (event.currentTarget as HTMLElement).offsetLeft + document.body.scrollLeft,
-        y: event.clientY - (event.currentTarget as HTMLElement).offsetTop + document.body.scrollTop
-      })
+      this.store.startGraping(clientPositionFromEvent(event))
     }
   }
   mouseup = () => this.store.endGraping()
