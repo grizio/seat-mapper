@@ -4,7 +4,7 @@ import {Structure} from "models/Structure"
 export * from "./0_1_0"
 
 export type VersionedStructure = Structure_0_1_0
-export type Version = "0.1.0" | "0.1.1" | "0.2.0"
+export type Version = "0.1.0" | "0.1.1" | "0.2.0" | "0.2.1"
 
 export function importStructure(structure: VersionedStructure): Structure {
   switch (structure.version || "") {
@@ -20,6 +20,7 @@ export function exportStructure(structure: Structure, version?: Version): Versio
     case "0.1.0":
     case "0.1.1":
     case "0.2.0":
+    case "0.2.1":
       return export_0_1_0(structure)
     default:
       return export_0_1_0(structure)
