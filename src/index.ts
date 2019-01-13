@@ -34,13 +34,25 @@ customElements.define("seat-mapper", preactWrapper(
 
 customElements.define("seat-mapper-preview", preactWrapper(
   SeatMapperPreview,
-  ["structure"],
+  ["structure", "width", "height", "preserve-aspect-ratio"],
   htmlElement => {
     const structureAttribute = htmlElement.getAttribute("structure")
     const versionedStructure = structureAttribute !== null ? JSON.parse(structureAttribute) : undefined
     const structure = versionedStructure !== undefined ? importStructure(versionedStructure) : undefined
     return {
-      structure: structure || defaultStructure()
+      structure: structure || defaultStructure(),
+      width: attributeAsNumber(htmlElement, "width"),
+      height: attributeAsNumber(htmlElement, "height"),
+      preserveAspectRatio: htmlElement.getAttribute("preserve-aspect-ratio") || undefined
     }
   }
 ))
+
+function attributeAsNumber(htmlElement: HTMLElement, attribute: string): number | undefined {
+  const valueAsString = htmlElement.getAttribute(attribute)
+  if (valueAsString !== null) {
+    return parseFloat(valueAsString)
+  } else {
+    return undefined
+  }
+}

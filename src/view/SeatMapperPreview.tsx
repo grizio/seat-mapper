@@ -1,22 +1,19 @@
 import {Component, h} from "preact"
-import {Structure} from "../models/Structure"
-import MapPreview from "./map/MapPreview"
+import {Props as MapPreviewProps, default as MapPreview} from "./map/MapPreview"
 import {renderStyles} from "utils/styles"
 import seatMapperPreviewStyles from "./styles/seatMapperPreviewStyles"
 
-interface Props {
-  structure: Structure
-}
+type Props = MapPreviewProps
 
 export default class SeatMapperPreview extends Component<Props, {}> {
   constructor(props: Props) {
     super(props)
   }
 
-  render({structure}: Props) {
+  render(props: Props) {
     return <div class="host preview">
       <style>{renderStyles(seatMapperPreviewStyles)}</style>
-      <MapPreview structure={structure}/>
+      <MapPreview {...props} />
     </div>
   }
 }
